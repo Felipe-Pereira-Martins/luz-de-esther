@@ -91,10 +91,13 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                 $description_long2 = '';
                 $stock2 = '';
                 $words2 = '';
-                $weight2 = ''; 	
-                $width2 = '';	
-                $height2 = '';	
+                $weight2 = '';
+                $width2 = '';
+                $height2 = '';
                 $length2 = '';
+                $model2 = '';
+                $shipping_value2 = '';
+                $name_categorie2 = '';
                 $title = "Inserir Registro";
 
                 if (isset($_GET['function']) && $_GET['function'] === 'edit') {
@@ -200,7 +203,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         <div class="col-12 mb-3">
                             <div class="form-group">
                                 <label>Descrição Longa</label>
-                                <textarea class="form-control form-control-sm" id="$description_long" name="$description_long"><?php echo $description_long2 ?></textarea>
+                                <textarea class="form-control form-control-sm" id="description_long" name="description_long"><?php echo $description_long2 ?></textarea>
                             </div>
                         </div>
 
@@ -245,7 +248,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
                                 <label>Ativo</label>
-                                <select class="form-control form-control-sm" name="shipping_type" id="shipping_type">
+                                <select class="form-control form-control-sm" name="enable" id="enable">
                                     <?php
                                     if (isset($_GET['function']) && $_GET['function'] == 'edit') {
                                         echo "<option value='" . $enable2 . "'>" . $enable2 . "</option>";
@@ -263,7 +266,8 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                                 </select>
                             </div>
                         </div>
-                         <div class="col-lg-3 col-md-6 mb-3">
+
+                        <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
                                 <label>Palavras Chave</label>
                                 <input value="<?php echo $words2 ?>" type="text" class="form-control form-control-sm" id="word" name="word" placeholder="Palavras Chave">
@@ -279,7 +283,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
                                 <label>Largura</label>
-                                <input value="<?php echo $widht2 ?>" type="text" class="form-control form-control-sm" id="width" name="width" placeholder="Largura">
+                                <input value="<?php echo $width2 ?>" type="text" class="form-control form-control-sm" id="width" name="width" placeholder="Largura">
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6 mb-3">
@@ -289,25 +293,38 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                             </div>
                         </div>
 
+                        <!-- Modelo -->
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
-                                <label>Comprimento</label>
-                                <input value="<?php echo $length2 ?>" type="text" class="form-control form-control-sm" id="length" name="length" placeholder="Comprimento">
+                                <label>Modelo</label>
+                                <input value="<?php echo $model2 ?>" type="text" class="form-control form-control-sm" id="model" name="model" placeholder="Modelo">
                             </div>
                         </div>
 
-
+                        <!-- Fecha a row anterior -->
                     </div>
 
-                    <!-- Linha 2: Imagem e Preview -->
-                    <div class="row">
-                        <div class="col-md-3">
+                    <!-- Abre nova row: Valor Frete + Imagem -->
+                    <div class="row align-items-start">
+                        <!-- Valor Frete -->
+                        <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
-                                <label>Imagem</label>
-                                <input type="file" class="form-control-file" id="image" name="image" onchange="uploadImage();">
+                                <label for="shipping-value">Valor Frete</label>
+                                <input value="<?php echo $shipping_value2 ?>" type="text"
+                                    class="form-control form-control-sm"
+                                    id="shipping-value" name="shipping-value"
+                                    placeholder="Valor Frete Fixo">
                             </div>
+                        </div>
 
-                            <div class="form-group mt-2">
+                        <!-- Imagem -->
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="form-group">
+                                <label for="image">Imagem</label>
+                                <input type="file" class="form-control-file w-100"
+                                    id="image" name="image" onchange="uploadImage();">
+                            </div>
+                            <div class="form-group mt-2 mb-0">
                                 <?php if (!empty($image2)) { ?>
                                     <img src="../../../store/assets/img/products/<?php echo $image2 ?>" alt="Imagem do produto" width="100" id="target">
                                 <?php } else { ?>
@@ -320,7 +337,6 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                     <small>
                         <div id="message"></div>
                     </small>
-
                 </div> <!-- Fecha modal-body -->
 
                 <div class="modal-footer">

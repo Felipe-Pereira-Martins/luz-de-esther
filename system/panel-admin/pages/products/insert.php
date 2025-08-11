@@ -6,10 +6,16 @@ require_once("../../../../config/connection.php");
 
 // Obtém os dados do formulário
 $name = $_POST['name-category'] ?? '';
-$categorie = $_POST['categorie'] ?? '';
-$id2 = $_POST['txtid2'] ?? '';
-$old = $_POST['old-name'] ?? '';
-$image = $_POST['old-image'] ?? 'no-photo.jpg';
+$id_categorie = $_POST['categorie'] ?? '';
+$id_sub_categorie = $_POST['sub_categorie'] ?? '';
+$description = $_POST['description'] ?? '';
+$value = $_POST['value'] ?? '';
+$stock = $_POST['stock'] ?? '';
+$shipping_type = $_POST['shipping_type'] ?? '';
+$enable = $_POST['enable'] ?? '';
+$word = $_POST['word'] ?? '';
+$weight = $_POST['weight'] ?? '';
+
 
 // Gera o name_url (slug)
 $name_new = strtr(trim($name), [
