@@ -1,0 +1,25 @@
+body {
+    font-family: Arial, sans-serif;
+}
+.hero {
+    background: url('https://source.unsplash.com/1600x900/?fashion') center/cover;
+    color: white;
+    text-align: center;
+    padding: 100px 20px;
+}
+.hero h1 {
+    font-size: 3rem;
+}
+.highlight-icon {
+    font-size: 2rem;
+    color: #ea9d9d;
+}
+.testimonial {
+    background: #f8f9fa;
+    padding: 50px 20px;
+}
+.footer {
+    background: #fdf2f0;
+    padding: 20px;
+    text-align: center;
+}
