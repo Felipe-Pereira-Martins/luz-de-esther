@@ -70,6 +70,6 @@ $update->bindValue(":id", $id_user);
 
 $update->execute();
 
-echo "Salvo com sucesso!";
+echo "SALVO COM SUCESSO!";
 
 ?>

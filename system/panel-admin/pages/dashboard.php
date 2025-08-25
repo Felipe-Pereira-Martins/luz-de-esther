@@ -85,91 +85,91 @@
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
-            </div> 
-    <form id="form-profile" method="POST" enctype="multipart/form-data">
-        <div class="modal-body">
-        <div class="form-group">
-            <label>Nome</label>
-            <input 
-                value="<?php echo isset($userName) ? htmlspecialchars($userName) : ''; ?>" 
-                type="text" 
-                class="form-control" 
-                id="name_user" 
-                name="name_user" 
-                placeholder="Nome">
-        </div>
-        <div class="form-group">
-            <label>CPF</label>
-            <input 
-                value="<?php echo isset($userCpf) ? htmlspecialchars($userCpf) : ''; ?>" 
-                type="text" 
-                class="form-control" 
-                id="cpf_user" 
-                name="cpf_user" 
-                placeholder="CPF">
-        </div>
-        <div class="form-group">
-            <label>Email</label>
-            <input 
-                value="<?php echo isset($userEmail) ? htmlspecialchars($userEmail) : ''; ?>" 
-                type="email" 
-                class="form-control" 
-                id="email_user" 
-                name="email_user" 
-                placeholder="Email">
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input  
-                        type="password" 
-                        class="form-control" 
-                        id="password" 
-                        name="password" 
-                        placeholder="Senha"
-                        autocomplete="current-password">
-                </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Confirmar Senha</label>
-                    <input 
-                        type="password" 
-                        class="form-control" 
-                        id="confirm-password" 
-                        name="confirm_password" 
-                        placeholder="Confirmar Senha">
+            <form id="form-profile" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nome</label>
+                        <input
+                            value="<?php echo isset($userName) ? htmlspecialchars($userName) : ''; ?>"
+                            type="text"
+                            class="form-control"
+                            id="name_user"
+                            name="name_user"
+                            placeholder="Nome">
+                    </div>
+                    <div class="form-group">
+                        <label>CPF</label>
+                        <input
+                            value="<?php echo isset($userCpf) ? htmlspecialchars($userCpf) : ''; ?>"
+                            type="text"
+                            class="form-control"
+                            id="cpf_user"
+                            name="cpf_user"
+                            placeholder="CPF">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input
+                            value="<?php echo isset($userEmail) ? htmlspecialchars($userEmail) : ''; ?>"
+                            type="email"
+                            class="form-control"
+                            id="email_user"
+                            name="email_user"
+                            placeholder="Email">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Senha</label>
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    id="password"
+                                    name="password"
+                                    placeholder="Senha"
+                                    autocomplete="current-password">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Confirmar Senha</label>
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    id="confirm-password"
+                                    name="confirm_password"
+                                    placeholder="Confirmar Senha">
+                            </div>
+                        </div>
+                    </div>
+                    <small>
+                        <div id="message-profile" class="mr-4"></div>
+                    </small>
                 </div>
-            </div>
-        </div>
-        <small>
-            <div id="message-profile" class="mr-4"></div>
-        </small>
-    </div>
-    <div class="modal-footer">
-        <input 
-           value="<?php echo isset($_SESSION['id_user']) ? htmlspecialchars($_SESSION['id_user']) : ''; ?>" 
-            type="hidden" 
-            name="txtid" 
-            id="txtid">
-        <input 
-            value="<?php echo isset($_SESSION['cpf_user']) ? htmlspecialchars($_SESSION['cpf_user']) : ''; ?>"
-            type="hidden" 
-            name="old" 
-            id="old">
-        <button 
-            type="button" 
-            id="btn-closed-profile" 
-            class="btn btn-secondary" 
-            data-dismiss="modal">Cancelar</button>
-        <button 
-            type="submit" 
-            name="btn-save-profile" 
-            id="btn-save-profile" 
-            class="btn btn-primary">Salvar</button>
-        </div>
-    </form>
+                <div class="modal-footer">
+                    <input
+                        value="<?php echo isset($_SESSION['id_user']) ? htmlspecialchars($_SESSION['id_user']) : ''; ?>"
+                        type="hidden"
+                        name="txtid"
+                        id="txtid">
+                    <input
+                        value="<?php echo isset($_SESSION['cpf_user']) ? htmlspecialchars($_SESSION['cpf_user']) : ''; ?>"
+                        type="hidden"
+                        name="old"
+                        id="old">
+                    <button
+                        type="button"
+                        id="btn-closed-profile"
+                        class="btn btn-secondary"
+                        data-dismiss="modal">Cancelar</button>
+                    <button
+                        type="submit"
+                        name="btn-save-profile"
+                        id="btn-save-profile"
+                        class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
 
         </div>
     </div>
@@ -185,64 +185,65 @@
 <script src="/store/system/panel-admin/assets/js/demo/datatables-demo.js"></script>
 
 <script>
-$(document).ready(function(){
-    $('#cpf_user').mask('000.000.000-00');
-  });
+    $(document).ready(function() {
+        $('#cpf_user').mask('000.000.000-00');
+    });
 </script>
 <script>
-$('#btn-save-profile').click(function (event) {
-    event.preventDefault();
+    $('#btn-save-profile').click(function(event) {
+        event.preventDefault();
 
-    $('#message-profile')
-        .removeClass('text-danger text-success text-warning text-primary')
-        .css('font-weight', 'bold')
-        .addClass('text-primary')
-        .text('Enviando...');
+        $('#message-profile')
+            .removeClass('text-danger text-success text-warning text-primary')
+            .css('font-weight', 'bold')
+            .addClass('text-primary')
+            .text('Enviando...');
 
-    $('#name, #email, #phone, #message').removeClass('is-invalid');
+        $('#name, #email, #phone, #message').removeClass('is-invalid');
         $.ajax({
-        url: "/store/system/panel-admin/edited-profile.php",
-        method: "post",
-        data: $('#form-profile').serialize(),
-        dataType: "text",
-        success: function (msg) {
-        const message = msg.trim();
-        $('#message-profile').removeClass('text-primary');
+            url: "/store/system/panel-admin/edited-profile.php",
+            method: "post",
+            data: $('#form-profile').serialize(),
+            dataType: "text",
+            success: function(msg) {
+                const message = msg.trim();
+                $('#message-profile').removeClass('text-primary');
 
-        if (message === 'SALVO COM SUCESSO!') {
-            $('#message-profile')
-                .addClass('text-success')
-                .css('font-weight', 'bold')
-                .text(message);
+                if (message === 'SALVO COM SUCESSO!') {
+                    $('#message-profile')
+                        .addClass('text-success')
+                        .css('font-weight', 'bold')
+                        .text(message);
 
-            // Atualiza o nome na tela
-            $('.user-name').text($('#form-profile input[name="name_user"]').val());
-            // Variavel que ao enviar a mensagem salvo com sucesso ela atualiza o nome de usuário no input
-            var newName = $('#form-profile input[name="name_user"]').val();   
-            // Chama no campo do formulário no input id name e chamando a variavel no php name_user
-            $('.user-name').text(newName);
-            $('#form-profile input[name="name_user"]').val(newName);
+                    // Atualiza o nome na tela
+                    $('.user-name').text($('#form-profile input[name="name_user"]').val());
+                    // Variavel que ao enviar a mensagem salvo com sucesso ela atualiza o nome de usuário no input
+                    var newName = $('#form-profile input[name="name_user"]').val();
+                    // Chama no campo do formulário no input id name e chamando a variavel no php name_user
+                    $('.user-name').text(newName);
+                    $('#form-profile input[name="name_user"]').val(newName);
 
-            setTimeout(function() {
-                $('#message-profile').text('');
-                $('#btn-closed-profile').click();
-            }, 1500);
+                    setTimeout(function() {
+                        $('#message-profile').text('');
+                        $('#btn-closed-profile').click();
+                    }, 1500);
 
-        } else {
-            $('#message-profile')
-                .addClass('text-danger')
-                .css('font-weight', 'bold')
-                .text(message);
-        }
-        }
+                } else {
+                    $('#message-profile')
+                        .addClass('text-danger')
+                        .css('font-weight', 'bold')
+                        .text(message);
+                }
+            }
+        });
+
     });
 
+    // Ao abrir o modal → limpa a mensagem e sincroniza com o nome da navbar
+    $('#ModalProfile').on('show.bs.modal', function() {
+        $('#message-profile').text('');
+        $('#name_user').val($('.user-name').text().trim());
     });
-
-// Ao abrir o modal → limpa a mensagem
-$('#myModal').on('show.bs.modal', function () {
-    $('#message-profile').text('');
-});
 </script>
 
 </body>
