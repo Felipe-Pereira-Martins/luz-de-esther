@@ -1,6 +1,6 @@
 <?php
-ini_set('display_errors', 0);
-error_reporting(E_ALL ^ E_WARNING);
+ini_set('display_errors', 1);           // LIGAR (desligue em produção)
+error_reporting(E_ALL);     
 
 require_once("../../../../config/connection.php");
 
@@ -75,7 +75,7 @@ if (!empty($id2)) {
     $stmt->bindValue(":id_categories", $categorie);
     $stmt->bindValue(":id", $id2);
 } else {
-    $stmt = $pdo->prepare("INSERT INTO sub_categories (name, name_url, image, items, id_categories) VALUES (:name, :name_url, :image, 0, :id_categories)");
+    $stmt = $pdo->prepare("INSERT INTO sub_categories (name, name_url, image, id_categories) VALUES (:name, :name_url, :image, :id_categories)");
     $stmt->bindValue(":name", $name);
     $stmt->bindValue(":name_url", $name_url);
     $stmt->bindValue(":image", $image);

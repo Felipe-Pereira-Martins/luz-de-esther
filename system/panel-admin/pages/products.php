@@ -59,10 +59,10 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         $items = 0;
                     ?>
                         <tr>
-                            <td>R$ <?php echo $name ?></td>
+                            <td><?php echo $name ?></td>
                             <td>R$ <?php echo $value ?></td>
-                            <td>R$ <?php echo $stock ?></td>
-                            <td>R$ <?php echo $catName ?></td>
+                            <td> <?php echo $stock ?></td>
+                            <td><?php echo $catName ?></td>
                             <td><img src="../../../store/assets/img/products/<?php echo $images ?>" alt="Imagem dos itens" width="50"></td>
                             <td>
                                 <a href="index.php?pag=<?php echo $pag ?>&function=edit&id=<?php echo $id ?>" class='text-primary mr-1' title='Editar Dados'>
@@ -161,8 +161,8 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                                         $res = $query->fetchAll(PDO::FETCH_ASSOC);
                                         if (!empty($res)) {
                                             $nameCategorie = $res[0]['name'];
-                                            echo "<option value='" . $sub_categorie2 . "'>" . $nameCategorie . "</option>";
-                                        }
+                                            echo "<option value='" . $name_categorie2 . "'>" . $nameCategorie . "</option>";
+                                        }  /* O código estava com erro por está puxando o vlor da subcategoria */
                                     }
                                     $query2 = $pdo->query("SELECT * FROM categories ORDER BY name ASC");
                                     $res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
@@ -176,6 +176,8 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                                     ?>
                                 </select>
                                 <input type="hidden" id="txtCategorie" name="txtCategorie">
+                                <input value="<?= $sub_categorie2 ?> " type="hidden" id="txtSubCategorie" name="txtSubCategorie">
+
                             </div>
                         </div>
 

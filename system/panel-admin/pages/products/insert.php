@@ -20,6 +20,8 @@ $width = $_POST['width'] ?? '';
 $height = $_POST['height'] ?? '';
 $model = $_POST['model'] ?? '';
 $shipping_value = $_POST['shipping-value'] ?? '';
+$length = $_POST['length'] ?? '';
+
 
 /* Troca o . pela , relacionado ao valor */
 $value = str_replace(',', '.', $value);
