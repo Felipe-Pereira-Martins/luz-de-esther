@@ -41,8 +41,11 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         $stock = $res[$i]['stock'] ?? '';
                         $sub_categorie = $res[$i]['sub_categorie'] ?? '';
                         $images = !empty($res[$i]['image']) ? $res[$i]['image'] : 'no-photo.jpg';
-                        $enable = $res[$i]['enable '] ?? ''; // Irá ter um icone antes do nome para saber se o produto está ativo ou inativo
+                        $enable = $res[$i]['enable'] ?? ''; // Irá ter um icone antes do nome para saber se o produto está ativo ou inativo
                         $id = $res[$i]['id'] ?? '';
+
+                        /* number_format irá retornar somente string */
+                        $value = number_format($value, 2, ',', '.'); // Formata para padrão brasileiro.
 
                         // Recuperar o nome da categoria
                         $query2 = $pdo->query("SELECT * FROM sub_categories WHERE id = '$sub_categorie'");
@@ -56,11 +59,11 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         $items = 0;
                     ?>
                         <tr>
-                            <td><?php echo $name ?></td>
-                            <td><?php echo $value ?></td>
-                            <td><?php echo $stock ?></td>
-                            <td><?php echo $catName ?></td>
-                            <td><img src="../../../store/assets/img/products/ <?php echo $images ?>" alt="Imagem dos itens" width="50"></td>
+                            <td>R$ <?php echo $name ?></td>
+                            <td>R$ <?php echo $value ?></td>
+                            <td>R$ <?php echo $stock ?></td>
+                            <td>R$ <?php echo $catName ?></td>
+                            <td><img src="../../../store/assets/img/products/<?php echo $images ?>" alt="Imagem dos itens" width="50"></td>
                             <td>
                                 <a href="index.php?pag=<?php echo $pag ?>&function=edit&id=<?php echo $id ?>" class='text-primary mr-1' title='Editar Dados'>
                                     <i class='far fa-edit'></i>
@@ -110,11 +113,11 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         $image2 = $res[0]['image'] ?? '';
                         $sub_categorie2 = $res[0]['sub_categorie'] ?? '';
                         $value2 = $res[0]['value'] ?? '';
-                        $stock2 = $res[0]['stocl'] ?? '';
+                        $stock2 = $res[0]['stock'] ?? '';
                         $description2 = $res[0]['description'] ?? '';
                         $description_long2 = $res[0]['description_long'] ?? '';
                         $shipping_type2 = $res[0]['shipping_type'] ?? '';
-                        $words2 = $res[0]['word'] ?? '';
+                        $words2 = $res[0]['words'] ?? '';
                         $enable2 = $res[0]['enable'] ?? '';
                         $weight2 = $res[0]['weight'] ?? '';
                         $width2 = $res[0]['width'] ?? '';
@@ -222,7 +225,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                                 <select class="form-control form-control-sm" name="shipping_type" id="shipping_type">
                                     <?php
                                     if (isset($_GET['function']) && $_GET['function'] === 'edit') {
-                                        $query = $pdo->query("SELECT * FROM shipping_type WHERE id = 'shipping_type2'");
+                                        $query = $pdo->query("SELECT * FROM shipping_type WHERE id = $shipping_type2");
                                         $res = $query->fetchAll(PDO::FETCH_ASSOC);
                                         if (!empty($res)) {
                                             $nameType = $res[0]['name'];
@@ -235,7 +238,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                                         $idType = $res2[$i]['id'];
                                         $nameType = $res2[$i]['name'];
                                         if (!isset($shipping_type2) || $shipping_type2 != $idType) {
-                                            echo "<option value='" . $idCat . "'>" . $nameType . "</option>";
+                                            echo "<option value='" . $idType . "'>" . $nameType . "</option>";
                                         }
                                     }
                                     ?>
@@ -328,7 +331,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                                 <?php if (!empty($image2)) { ?>
                                     <img src="../../../store/assets/img/products/<?php echo $image2 ?>" alt="Imagem do produto" width="100" id="target">
                                 <?php } else { ?>
-                                    <img src="../../assets/img/sub-categories/no-photo.jpg" alt="Sem imagem" width="100" id="target">
+                                    <img src="../../../store/assets/img/products/no-photo.jpg" alt="Sem imagem" width="100" id="target">
                                 <?php } ?>
                             </div>
                         </div>
@@ -502,7 +505,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                             success: function(message) {
                                 $('#message_delete').removeClass();
 
-                                if (message.trim() === "SALVO COM SUCESSO!!") {
+                                if (message.trim() === "EXCLUÍDO COM SUCESSO!!") {
                                     // Fecha a modal e recarrega imediatamente
                                     $('#modal-delete').modal('hide');
                                     window.location = "index.php?pag=" + pag;

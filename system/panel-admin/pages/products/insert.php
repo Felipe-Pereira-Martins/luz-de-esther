@@ -21,6 +21,13 @@ $height = $_POST['height'] ?? '';
 $model = $_POST['model'] ?? '';
 $shipping_value = $_POST['shipping-value'] ?? '';
 
+/* Troca o . pela , relacionado ao valor */
+$value = str_replace(',', '.', $value);
+$shipping_value = str_replace(',', '.', $shipping_value);
+$weight = str_replace(',', '.', $weight);
+$width = str_replace(',', '.', $width);
+$height = str_replace(',', '.', $height);
+$length = str_replace(',', '.', $length);
 
 // Gera o name_url (slug)
 $name_new = strtr(trim($name), [
@@ -194,7 +201,6 @@ $stmt->bindValue(':length',           $length);
 $stmt->bindValue(':model',            $model);
 $stmt->bindValue(':shipping_value',   $shippingValueDB);
 
-$stmt->execute();
 
 try {
     $stmt->execute();
