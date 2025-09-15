@@ -192,7 +192,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         <!-- Valor -->
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
-                                <label>Valor</label>
+                                <label>Valor Produto</label>
                                 <input value="<?php echo $value2 ?>" type="text" class="form-control form-control-sm" id="value" name="value" placeholder="Valor">
                             </div>
                         </div>
@@ -246,51 +246,47 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                                     ?>
                                 </select>
                             </div>
-
                         </div>
-
                         <!-- Ativo -->
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
                                 <label>Ativo</label>
+                                <?php
+                                // Normaliza o valor do BD antes
+                                $enable2 = isset($enable2) ? trim($enable2) : '';
+                                $e = mb_strtolower($enable2, 'UTF-8');
+                                if ($e === 'sim')            $enable2 = 'Sim';
+                                elseif ($e === 'não' || $e === 'nao') $enable2 = 'Não';
+                                else                         $enable2 = 'Sim'; // default
+                                ?>
                                 <select class="form-control form-control-sm" name="enable" id="enable">
-                                    <?php
-                                    if (isset($_GET['function']) && $_GET['function'] == 'edit') {
-                                        echo "<option value='" . $enable2 . "'>" . $enable2 . "</option>";
-                                    }
-
-                                    if ($enable2 != "SIM") {
-                                        echo "<option value='Sim'>Sim</option>";
-                                    }
-
-                                    if ($enable2 != "NÃO") {
-                                        echo "<option value='Não'>Não</option>";
-                                    }
-                                    ?>
-
+                                    <option value="Sim" <?= $enable2 === 'Sim' ? 'selected' : '' ?>>Sim</option>
+                                    <option value="Não" <?= $enable2 === 'Não' ? 'selected' : '' ?>>Não</option>
                                 </select>
                             </div>
                         </div>
-
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="form-group">
-                                <label>Palavras Chave</label>
-                                <input value="<?php echo $words2 ?>" type="text" class="form-control form-control-sm" id="word" name="word" placeholder="Palavras Chave">
-                            </div>
-                        </div>
-
+                        <!-- Peso -->
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
                                 <label>Peso</label>
                                 <input value="<?php echo $weight2 ?>" type="text" class="form-control form-control-sm" id="weight" name="weight" placeholder="Peso">
                             </div>
                         </div>
+                        <!-- Palavras Chaves -->
+                        <div class="col-12 mb-3">
+                            <div class="form-group">
+                                <label>Palavras Chave</label>
+                                <input value="<?php echo $words2 ?>" type="text" class="form-control form-control-sm" id="word" name="word" placeholder="Palavras Chave">
+                            </div>
+                        </div>
+                        <!-- Largura -->
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
                                 <label>Largura</label>
                                 <input value="<?php echo $width2 ?>" type="text" class="form-control form-control-sm" id="width" name="width" placeholder="Largura">
                             </div>
                         </div>
+                        <!-- Altura -->
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
                                 <label>Altura</label>
@@ -305,23 +301,22 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                                 <input value="<?php echo $model2 ?>" type="text" class="form-control form-control-sm" id="model" name="model" placeholder="Modelo">
                             </div>
                         </div>
-
-                        <!-- Fecha a row anterior -->
-                    </div>
-
-                    <!-- Abre nova row: Valor Frete + Imagem -->
-                    <div class="row align-items-start">
                         <!-- Valor Frete -->
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
                                 <label for="shipping-value">Valor Frete</label>
-                                <input value="<?php echo $shipping_value2 ?>" type="text"
+                                <input 
+                                    value="<?php echo $shipping_value2 ?>" 
+                                    type="text"
                                     class="form-control form-control-sm"
                                     id="shipping-value" name="shipping-value"
                                     placeholder="Valor Frete Fixo">
                             </div>
                         </div>
-
+                        <!-- Fecha a row anterior -->
+                    </div>
+                    <!-- Abre nova row: Imagem -->
+                    <div class="row align-items-start">
                         <!-- Imagem -->
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
@@ -342,180 +337,198 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                     <small>
                         <div id="message"></div>
                     </small>
-                </div> <!-- Fecha modal-body -->
+                    <!--  A FOOTER FICA DENTRO DA .modal-content e DENTRO DO <form> -->
+                    <div class="modal-footer">
+                        <input value="<?php echo $_GET['id'] ?? '' ?>" type="hidden" name="txtid2" id="txtid2">
+                        <input value="<?php echo $name2 ?>" type="hidden" name="old-name" id="old-name">
+                        <input type="hidden" name="old-image" value="<?php echo $image2 ?>">
+                        <button type="button" id="btn-closed" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" name="btn-save" id="btn-save" class="btn btn-primary">Salvar</button>
 
-                <div class="modal-footer">
-                    <input value="<?php echo $_GET['id'] ?? '' ?>" type="hidden" name="txtid2" id="txtid2">
-                    <input value="<?php echo $name2 ?>" type="hidden" name="old-name" id="old-name">
-                    <input type="hidden" name="old-image" value="<?php echo $image2 ?>">
-                    <button type="button" id="btn-closed" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" name="btn-save" id="btn-save" class="btn btn-primary">Salvar</button>
-                </div>
-            </form>
-
-            <div class="modal" id="modal-delete" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Excluir Registro</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p>Deseja realmente Excluir este Registro?</p>
-                            <div align="center" id="message_delete" class="">
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-cancel-delete">Cancelar</button>
-                            <form method="post" id="form-delete">
-                                <input type="hidden" id="id" name="id" value="<?php echo $_GET['id'] ?>" required>
-                                <button type="button" id="btn-delete" name="btn-delete" class="btn btn-danger">Excluir</button>
-                            </form>
-                        </div>
                     </div>
+
+            </form> <!--  fecha o form AQUI, ainda dentro da .modal-content -->
+
+        </div> <!-- Fecha modal-body -->
+    </div> <!-- fecha .modal-content da #modalData -->
+</div> <!-- fecha .modal-dialog da #modalData -->
+</div> <!-- fecha .modal (id=modalData) -->
+
+
+<div class="modal-footer">
+    <input value="<?php echo $_GET['id'] ?? '' ?>" type="hidden" name="txtid2" id="txtid2">
+    <input value="<?php echo $name2 ?>" type="hidden" name="old-name" id="old-name">
+    <input type="hidden" name="old-image" value="<?php echo $image2 ?>">
+    <button type="button" id="btn-closed" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+    <button type="submit" name="btn-save" id="btn-save" class="btn btn-primary">Salvar</button>
+</div>
+</form>
+<!-- Modal Delete -->
+<div class="modal" id="modal-delete" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Excluir Registro</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Deseja realmente Excluir este Registro?</p>
+                <div align="center" id="message_delete" class="">
                 </div>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-cancel-delete">Cancelar</button>
+                <form method="post" id="form-delete">
+                    <input type="hidden" id="id" name="id" value="<?= $_GET['id'] ?? '' ?>" required>
+                    <button type="button" id="btn-delete" name="btn-delete" class="btn btn-danger">Excluir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fim Delete -->
 
-            <?php if (isset($_GET["function"]) && $_GET["function"] == "new") {
-                echo "<script>$('#modalData').modal('show');</script>";
-            } ?>
+<?php if (isset($_GET["function"]) && $_GET["function"] == "new") {
+    echo "<script>$('#modalData').modal('show');</script>";
+} ?>
 
-            <?php if (isset($_GET["function"]) && $_GET["function"] == "edit") {
-                echo "<script>$('#modalData').modal('show');</script>";
-            } ?>
+<?php if (isset($_GET["function"]) && $_GET["function"] == "edit") {
+    echo "<script>$('#modalData').modal('show');</script>";
+} ?>
 
-            <?php if (isset($_GET["function"]) && $_GET["function"] == "deleted") {
-                echo "<script>$('#modal-delete').modal('show');</script>";
-            } ?>
+<?php if (isset($_GET["function"]) && $_GET["function"] == "deleted") {
+    echo "<script>$('#modal-delete').modal('show');</script>";
+} ?>
 
-            <!--AJAX PARA LISTAR OS DADOS DA SUB CATEGORIA NO SELECT -->
-            <script type="text/javascript">
-                $(document).ready(function() {
-                    document.getElementById('txtCategorie').value = document.getElementById('categorie').value;
-                    listSubCategorie();
-                })
-            </script>
+<!--AJAX PARA LISTAR OS DADOS DA SUB CATEGORIA NO SELECT -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        document.getElementById('txtCategorie').value = document.getElementById('categorie').value;
+        listSubCategorie();
+    })
+</script>
 
-            <script type="text/javascript">
-                function listSubCategorie() {
-                    var pag = "<?= $pag ?>";
-                    $.ajax({
-                        url: "pages/" + pag + "/list-subcategorie.php",
-                        method: "post",
-                        data: $('form').serialize(),
-                        dataType: "html",
-                        success: function(result) {
-                            $('#list-subcategorie').html(result); /* Div onde vai trazer a informação */
-                        }
-                    })
-                }
-            </script>
+<script type="text/javascript">
+    function listSubCategorie() {
+        var pag = "<?= $pag ?>";
+        $.ajax({
+            url: "pages/" + pag + "/list-subcategorie.php",
+            method: "post",
+            data: $('form').serialize(),
+            dataType: "html",
+            success: function(result) {
+                $('#list-subcategorie').html(result); /* Div onde vai trazer a informação */
+            }
+        })
+    }
+</script>
 
-            <!-- Script para buscar pelo select -->
-            <script type="text/javascript">
-                $('#categorie').change(function() {
-                    document.getElementById('txtCategorie').value = $(this).val();
-                    listSubCategorie();
-                })
-            </script>
+<!-- Script para buscar pelo select -->
+<script type="text/javascript">
+    $('#categorie').change(function() {
+        document.getElementById('txtCategorie').value = $(this).val();
+        document.getElementById('txtSubCategorie').value = ""; /* Resolve o problema de passar o valor 1 na subcategoria do select */
+        listSubCategorie();
+    })
+</script>
 
-            <!--SCRIPT PARA CARREGAR IMAGEM -->
-            <script type="text/javascript">
-                function uploadImage() {
-                    var target = document.getElementById('target');
-                    var file = document.querySelector("input[type=file]").files[0];
-                    var reader = new FileReader();
-                    reader.onloadend = function() {
-                        target.src = reader.result;
-                    };
-                    if (file) {
-                        reader.readAsDataURL(file);
+<!--SCRIPT PARA CARREGAR IMAGEM -->
+<script type="text/javascript">
+    function uploadImage() {
+        var target = document.getElementById('target');
+        var file = document.querySelector("input[type=file]").files[0];
+        var reader = new FileReader();
+        reader.onloadend = function() {
+            target.src = reader.result;
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            target.src = "";
+        }
+    }
+</script>
+
+<!-- SCRIPT PARA DESABILITAR A ORDENAÇÃO AUTOMÁTICA DA DATATABLE -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#dataTable').dataTable({
+            "ordering": false
+        })
+    });
+</script>
+
+<!--AJAX PARA INSERÇÃO DOS DADOS -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        var pag = "<?= $pag ?>";
+        $('#btn-save').click(function(event) {
+            event.preventDefault();
+            var formData = new FormData($('#form')[0]); // coleta todos os campos, incluindo imagem
+            $.ajax({
+                url: "pages/" + pag + "/insert.php", // caminho do script PHP
+                method: "POST",
+                data: formData,
+                dataType: "text",
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function(message) {
+                    $('#message').removeClass();
+
+                    if (message.trim() === "SALVO COM SUCESSO!!") {
+                        $('#message').addClass('text-success').text(message);
+                        $('#name-category').val('');
+                        setTimeout(function() {
+                            $('#btn-closed').click();
+                            window.location = "index.php?pag=" + pag;
+                        }, 1500);
+
                     } else {
-                        target.src = "";
+                        $('#message').addClass('text-danger').text(message);
+                    }
+                },
+                xhr: function() {
+                    var myXhr = $.ajaxSettings.xhr();
+                    if (myXhr.upload) {
+                        myXhr.upload.addEventListener('progress', function() {
+                            // progresso do upload (opcional)
+                        }, false);
+                    }
+                    return myXhr;
+                }
+            });
+        });
+    });
+</script>
+
+<!-- AJAX PARA EXCLUSÃO DOS DADOS -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        var pag = "<?= $pag ?>";
+
+        $('#btn-delete').click(function(event) {
+            event.preventDefault();
+
+            $.ajax({
+                url: "pages/" + pag + "/deleted.php",
+                method: "post",
+                data: $('#form-delete').serialize(),
+                dataType: "text",
+                success: function(message) {
+                    $('#message_delete').removeClass();
+
+                    if (message.trim() === "EXCLUÍDO COM SUCESSO!!") {
+                        // Fecha a modal e recarrega imediatamente
+                        $('#modal-delete').modal('hide');
+                        window.location = "index.php?pag=" + pag;
+                    } else {
+                        $('#message_delete').addClass('text-danger').text(message);
                     }
                 }
-            </script>
-
-            <!-- SCRIPT PARA DESABILITAR A ORDENAÇÃO AUTOMÁTICA DA DATATABLE -->
-            <script type="text/javascript">
-                $(document).ready(function() {
-                    $('#dataTable').dataTable({
-                        "ordering": false
-                    })
-                });
-            </script>
-
-            <!--AJAX PARA INSERÇÃO DOS DADOS -->
-            <script type="text/javascript">
-                $(document).ready(function() {
-                    var pag = "<?= $pag ?>";
-                    $('#btn-save').click(function(event) {
-                        event.preventDefault();
-                        var formData = new FormData($('#form')[0]); // coleta todos os campos, incluindo imagem
-                        $.ajax({
-                            url: "pages/" + pag + "/insert.php", // caminho do script PHP
-                            method: "POST",
-                            data: formData,
-                            dataType: "text",
-                            contentType: false,
-                            processData: false,
-                            cache: false,
-                            success: function(message) {
-                                $('#message').removeClass();
-
-                                if (message.trim() === "SALVO COM SUCESSO!!") {
-                                    $('#message').addClass('text-success').text(message);
-                                    $('#name-category').val('');
-                                    setTimeout(function() {
-                                        $('#btn-closed').click();
-                                        window.location = "index.php?pag=" + pag;
-                                    }, 1500);
-
-                                } else {
-                                    $('#message').addClass('text-danger').text(message);
-                                }
-                            },
-                            xhr: function() {
-                                var myXhr = $.ajaxSettings.xhr();
-                                if (myXhr.upload) {
-                                    myXhr.upload.addEventListener('progress', function() {
-                                        // progresso do upload (opcional)
-                                    }, false);
-                                }
-                                return myXhr;
-                            }
-                        });
-                    });
-                });
-            </script>
-
-            <!-- AJAX PARA EXCLUSÃO DOS DADOS -->
-            <script type="text/javascript">
-                $(document).ready(function() {
-                    var pag = "<?= $pag ?>";
-
-                    $('#btn-delete').click(function(event) {
-                        event.preventDefault();
-
-                        $.ajax({
-                            url: "pages/" + pag + "/deleted.php",
-                            method: "post",
-                            data: $('#form-delete').serialize(),
-                            dataType: "text",
-                            success: function(message) {
-                                $('#message_delete').removeClass();
-
-                                if (message.trim() === "EXCLUÍDO COM SUCESSO!!") {
-                                    // Fecha a modal e recarrega imediatamente
-                                    $('#modal-delete').modal('hide');
-                                    window.location = "index.php?pag=" + pag;
-                                } else {
-                                    $('#message_delete').addClass('text-danger').text(message);
-                                }
-                            }
-                        });
-                    });
-                });
-            </script>
+            });
+        });
+    });
+</script>

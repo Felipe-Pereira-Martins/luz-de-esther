@@ -21,6 +21,19 @@ $height = $_POST['height'] ?? '';
 $model = $_POST['model'] ?? '';
 $shipping_value = $_POST['shipping-value'] ?? '';
 $length = $_POST['length'] ?? '';
+$id2 = $_POST['txtid2'] ?? '';
+
+// ---- NOVO: flags e imagem atual do banco (fonte da verdade) ----
+$hasNewImage   = 0;     // indica se houve upload novo
+$newImageName  = null;  // guarda o nome do novo arquivo, se houver
+$currentImageDB = null; // imagem atual do produto no banco
+
+if (!empty($id2)) { // modo edição
+    $stmtCur = $pdo->prepare("SELECT image FROM products WHERE id = :id");
+    $stmtCur->execute([':id' => $id2]);
+    $currentImageDB = $stmtCur->fetchColumn() ?: 'no-photo.jpg';
+}
+
 
 
 /* Troca o . pela , relacionado ao valor */
@@ -84,7 +97,7 @@ $name_new = strtr(trim($name), [
 ]);
 $name_url = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $name_new));
 $old = $_POST['old-name'] ?? ''; // Corrigido para refletir o novo name no formulário
-$id2 = $_POST['txtid2'] ?? '';
+
 // Validação
 // Required fields and messages based on your variables
 $requiredFields = [
@@ -123,13 +136,16 @@ if (!empty($_FILES['image']['name'])) {
 
     $allowed = ['png', 'jpg', 'jpeg', 'gif'];
     if (in_array($ext, $allowed)) {
-        $image = uniqid() . '.' . $ext;
-        $path = __DIR__ . "/../../../../assets/img/products/" . $image;
+        $newImageName = uniqid() . '.' . $ext;
+        $path = __DIR__ . "/../../../../assets/img/products/" . $newImageName;
 
         if (!move_uploaded_file($image_time, $path)) {
             echo 'Erro ao salvar a imagem!';
             exit();
         }
+
+        $hasNewImage = 1; // marca que temos imagem nova válida
+
     } else {
         echo 'Extensão de Imagem não permitida!';
         exit();
@@ -145,6 +161,9 @@ $shippingValueDB  = str_replace(',', '.', $shipping_value);
 $length = $_POST['length'] ?? null;
 
 // UPDATE ou INSERT em products
+// Atualiza a coluna 'image' somente quando foi feito upload novo.
+// THEN :image ELSE image END,             
+// Se :has_new_image = 0, o valor antigo é preservado. */   
 if (!empty($id2)) {
     $stmt = $pdo->prepare("
         UPDATE products SET
@@ -155,7 +174,7 @@ if (!empty($id2)) {
             description      = :description,
             description_long = :description_long,
             value            = :value,
-            image            = :image,
+            image = CASE WHEN :has_new_image = 1 THEN :image ELSE image END,
             stock            = :stock,
             shipping_type    = :shipping_type,
             words            = :words,
@@ -190,8 +209,7 @@ $stmt->bindValue(':name',             $name);
 $stmt->bindValue(':name_url',         $name_url);            // certifique-se de preencher $name_url
 $stmt->bindValue(':description',      $description);
 $stmt->bindValue(':description_long', $description_long);
-$stmt->bindValue(':value',            $priceDB);
-$stmt->bindValue(':image',            $image);               // caminho/nome do arquivo salvo
+$stmt->bindValue(':value',            $priceDB);     // caminho/nome do arquivo salvo
 $stmt->bindValue(':stock',            $stock);
 $stmt->bindValue(':shipping_type',    $shipping_type);
 $stmt->bindValue(':words',            $word);
@@ -203,6 +221,16 @@ $stmt->bindValue(':length',           $length);
 $stmt->bindValue(':model',            $model);
 $stmt->bindValue(':shipping_value',   $shippingValueDB);
 
+// ----- Binds extras para a lógica de imagem -----
+// :has_new_image  -> 0 ou 1 indicando se houve upload de nova foto
+// :image -> nome do novo arquivo se houve upload;
+//caso contrário mantém o nome atual do banco
+if (!empty($id2)) { // UPDATE
+    $stmt->bindValue(':has_new_image', $hasNewImage, PDO::PARAM_INT);
+    $stmt->bindValue(':image', $hasNewImage ? $newImageName : ($currentImageDB ?: 'no-photo.jpg'));
+} else {            // INSERT
+    $stmt->bindValue(':image', $hasNewImage ? $newImageName : 'no-photo.jpg');
+}
 
 try {
     $stmt->execute();

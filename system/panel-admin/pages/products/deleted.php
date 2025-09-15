@@ -1,38 +1,36 @@
 <?php
-// Corrige warnings
+// Desativa warnings em produção
 ini_set('display_errors', 0);
 error_reporting(E_ALL ^ E_WARNING);
 
 require_once("../../../../config/connection.php");
 
-// Obtém o ID enviado
+// ID via POST (validar e tipar)
 $id = $_POST['id'] ?? '';
-
-if (empty($id)) {
+if (!ctype_digit((string)$id)) {
     echo "ID inválido!";
     exit();
 }
+$id = (int)$id;
 
-// Busca a imagem com segurança
-$stmt = $pdo->prepare("SELECT image FROM sub_categories WHERE id = :id");
-$stmt->bindValue(":id", $id);
+// Busca a imagem atual do produto
+$stmt = $pdo->prepare("SELECT image FROM products WHERE id = :id");
+$stmt->bindValue(":id", $id, PDO::PARAM_INT);
 $stmt->execute();
-$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-$image = $res[0]['image'] ?? '';
+$image = $stmt->fetchColumn() ?: '';
 
-// Remove a imagem física, se não for a padrão
-if (!empty($image) && $image !== 'no-photo.jpg') {
-    // Caminho ajustado com base na estrutura real
-    $path = __DIR__ . "/../../../../assets/img/categories/" . $image;
-
-    if (file_exists($path)) {
-        unlink($path); // Exclui a imagem
+// Remove o arquivo físico (pasta CORRETA: products)
+if ($image && $image !== 'no-photo.jpg') {
+    $path = __DIR__ . "/../../../../assets/img/products/" . $image;
+    if (is_file($path)) {
+        @unlink($path);
     }
 }
 
-// Remove o registro do banco
-$stmt = $pdo->prepare("DELETE FROM sub_categories WHERE id = :id");
-$stmt->bindValue(":id", $id);
+// Exclui o registro na tabela products
+$stmt = $pdo->prepare("DELETE FROM products WHERE id = :id");
+$stmt->bindValue(":id", $id, PDO::PARAM_INT);
 $stmt->execute();
 
-echo "SALVO COM SUCESSO!!";
+// Resposta que o seu JS espera
+echo "EXCLUÍDO COM SUCESSO!!";
