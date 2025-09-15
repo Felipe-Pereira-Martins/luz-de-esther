@@ -56,20 +56,28 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                             $catName = 'Categoria não encontrada';
                         }
 
-                        $items = 0;
+                        $class = "";
+                        if($enable == "Sim") {
+                            $class = "text-success";
+                        }else{
+                            $class = "text-danger";
+                        }
                     ?>
                         <tr>
-                            <td><?php echo $name ?></td>
+                            <td><i class="fas fa-check-circle <?= $class ?>"></i> <?= $name ?></td>
                             <td>R$ <?php echo $value ?></td>
                             <td> <?php echo $stock ?></td>
                             <td><?php echo $catName ?></td>
-                            <td><img src="../../../store/assets/img/products/<?php echo $images ?>" alt="Imagem dos itens" width="50"></td>
+                            <td><img src="../../../store/assets/img/products/<?= $images ?>" alt="Imagem dos itens" width="50"></td>
                             <td>
-                                <a href="index.php?pag=<?php echo $pag ?>&function=edit&id=<?php echo $id ?>" class='text-primary mr-1' title='Editar Dados'>
+                                <a href="index.php?pag=<?= $pag ?>&function=edit&id=<?= $id ?>" class='text-primary mr-1' title='Editar Dados'>
                                     <i class='far fa-edit'></i>
                                 </a>
-                                <a href="index.php?pag=<?php echo $pag ?>&function=deleted&id=<?php echo $id ?>" class='text-danger mr-1' title='Excluir Registro'>
+                                <a href="index.php?pag=<?= $pag ?>&function=deleted&id=<?= $id ?>" class='text-danger mr-1' title='Excluir Registro'>
                                     <i class='far fa-trash-alt'></i>
+                                </a>
+                                <a href="index.php?pag=<?= $pag ?>&function=images&id=<?= $id ?>" class='text-secondary' title='Inserir Imagens'>
+                                <i class="fas fa-images"></i>
                                 </a>
                             </td>
                         </tr>
@@ -401,6 +409,10 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
 <?php if (isset($_GET["function"]) && $_GET["function"] == "deleted") {
     echo "<script>$('#modal-delete').modal('show');</script>";
 } ?>
+<?php if (isset($_GET["function"]) && $_GET["function"] == "images") {
+    echo "<script>$('#modal-images').modal('show');</script>";
+} ?>
+
 
 <!--AJAX PARA LISTAR OS DADOS DA SUB CATEGORIA NO SELECT -->
 <script type="text/javascript">
