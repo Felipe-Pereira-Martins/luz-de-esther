@@ -57,9 +57,9 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         }
 
                         $class = "";
-                        if($enable == "Sim") {
+                        if ($enable == "Sim") {
                             $class = "text-success";
-                        }else{
+                        } else {
                             $class = "text-danger";
                         }
                     ?>
@@ -77,7 +77,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                                     <i class='far fa-trash-alt'></i>
                                 </a>
                                 <a href="index.php?pag=<?= $pag ?>&function=images&id=<?= $id ?>" class='text-secondary' title='Inserir Imagens'>
-                                <i class="fas fa-images"></i>
+                                    <i class="fas fa-images"></i>
                                 </a>
                             </td>
                         </tr>
@@ -170,14 +170,14 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                                         if (!empty($res)) {
                                             $nameCategorie = $res[0]['name'];
                                             echo "<option value='" . $name_categorie2 . "'>" . $nameCategorie . "</option>";
-                                        }  /* O código estava com erro por está puxando o vlor da subcategoria */
+                                        }  /* O código estava com erro por está puxando o valor da subcategoria */
                                     }
                                     $query2 = $pdo->query("SELECT * FROM categories ORDER BY name ASC");
                                     $res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
                                     for ($i = 0; $i < count($res2); $i++) {
                                         $idCat = $res2[$i]['id'];
                                         $nameCat = $res2[$i]['name'];
-                                        if (!isset($categorie2) || $categorie2 != $idCat) {
+                                        if (!isset($name_categorie2) || $name_categorie2 != $idCat) {
                                             echo "<option value='" . $idCat . "'>" . $nameCat . "</option>";
                                         }
                                     }
@@ -283,7 +283,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         <!-- Palavras Chaves -->
                         <div class="col-12 mb-3">
                             <div class="form-group">
-                                <label>Palavras Chave</label>
+                                <label>Palavras Chaves</label>
                                 <input value="<?php echo $words2 ?>" type="text" class="form-control form-control-sm" id="word" name="word" placeholder="Palavras Chave">
                             </div>
                         </div>
@@ -313,8 +313,8 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
                                 <label for="shipping-value">Valor Frete</label>
-                                <input 
-                                    value="<?php echo $shipping_value2 ?>" 
+                                <input
+                                    value="<?php echo $shipping_value2 ?>"
                                     type="text"
                                     class="form-control form-control-sm"
                                     id="shipping-value" name="shipping-value"
@@ -397,6 +397,73 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
     </div>
 </div>
 <!-- Fim Delete -->
+<!-- Modal para inserir imagem -->
+<div class="modal" id="modal-images" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Imagens do Produto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-photos" method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="col-md-12 form-group">
+                                <label>Imagem do Produto</label>
+                                <input type="file" class="form-control-file" id="imgproduct" name="imgproduct" onchange="uploadImageProduct();">
+                            </div>
+                            <div class="col-md-12 mb-2">
+                                <img src="../../../store/assets/img/products/details/no-photo.jpg" alt="Carregue sua Imagem" id="targetImgProduct" width="100%">
+                            </div>
+                        </div>
+                        <!-- Lista Exibe os produtos -->
+                        <div class="col-md-7" id="list-img-products">
+                        </div>
+                    </div>
+                    <div class="col-md-12" align="right">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-cancel-photos">Cancelar</button>
+                        <input type="hidden" id="id_product_images" name="id" value="<?= $_GET['id'] ?>" required>
+                        <button type="submit" id="btn-fotos" name="btn-photos" class="btn btn-info">Salvar</button>
+                    </div>
+                    <small>
+                        <div align="center" id="message_photos" class="">
+                        </div>
+                    </small>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal deletar imagem -->
+<div class="modal" id="modalDeletedImg" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Excluir Registro</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Deseja realmente excluir esta Imagem?</p>
+                <div align="center" id="message-deleted-img" class="">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-cancel-img">Cancelar</button>
+                <form method="post" id="form-delete-img">
+                    <!-- Recebe o input, no script para deletar a imagem, Input oculto -->
+                    <input type="hidden" name="id_photo_img" id="id_photo_img">
+                    <button type="button" id="btn-deleted-img" name="btn-deleted-img" class="btn btn-danger">Excluir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <?php if (isset($_GET["function"]) && $_GET["function"] == "new") {
     echo "<script>$('#modalData').modal('show');</script>";
@@ -413,10 +480,11 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
     echo "<script>$('#modal-images').modal('show');</script>";
 } ?>
 
-
 <!--AJAX PARA LISTAR OS DADOS DA SUB CATEGORIA NO SELECT -->
 <script type="text/javascript">
+    /* Quando for lido irá listar as imagens dos produtos */
     $(document).ready(function() {
+        listImagesProduct();
         document.getElementById('txtCategorie').value = document.getElementById('categorie').value;
         listSubCategorie();
     })
@@ -437,6 +505,73 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
     }
 </script>
 
+<!-- LISTAR IMAGEMS PRODUTOS -->
+<script type="text/javascript">
+    function listImagesProduct() {
+        var pag = "<?= $pag ?>";
+        $.ajax({
+            url: "pages/" + pag + "/list-images.php",
+            method: "post",
+            data: $('form').serialize(),
+            dataType: "html",
+            success: function(result) {
+                $('#list-img-products').html(result); /* Div onde vai trazer a informação */
+            }
+        })
+    }
+</script>
+
+<!--FUNCAO PARA CHAMAR MODAL DE DELETAR IMAGEM DAS FOTOS -->
+<script type="text/javascript">
+    function deletedImg(img) {
+        document.getElementById('id_photo_img').value = img;
+        $('#modalDeletedImg').modal('show');
+    }
+</script>
+
+<!--AJAX PARA INSERÇÃO DOS DADOS -->
+<script type="text/javascript">
+    $("#form-photos").on("submit", function(e) {
+        e.preventDefault();
+
+        var pag = "<?= $pag ?>";
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: "pages/" + pag + "/insert-images.php",
+            method: "POST",
+            data: formData,
+            contentType: false, // <- obrigatório c/ FormData
+            processData: false, // <- obrigatório c/ FormData
+            cache: false,
+            dataType: "text",
+            success: function(message) {
+                // limpa estados anteriores
+               if (message.trim() === "SALVO COM SUCESSO!!") {
+                $('#message_photos').addClass('text-success').text(message);
+                listImagesProduct(); // <-- chama no sucesso
+                } else {
+                $('#message_photos').addClass('text-danger').text(message);
+                }
+            },
+            error: function(xhr) {
+                $('#message_photos')
+                    .removeClass('text-success').addClass('text-danger')
+                    .text(xhr.responseText || 'Erro no upload.');
+            },
+            xhr: function() {
+                var myXhr = $.ajaxSettings.xhr();
+                if (myXhr.upload) {
+                    myXhr.upload.addEventListener('progress', function(evt) {
+                        // opcional: barra de progresso
+                    }, false);
+                }
+                return myXhr;
+            }
+        });
+    });
+</script>
+
 <!-- Script para buscar pelo select -->
 <script type="text/javascript">
     $('#categorie').change(function() {
@@ -446,11 +581,28 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
     })
 </script>
 
-<!--SCRIPT PARA CARREGAR IMAGEM -->
+<!--SCRIPT PARA CARREGAR IMAGEM PRINCIPAL -->
 <script type="text/javascript">
     function uploadImage() {
         var target = document.getElementById('target');
         var file = document.querySelector("input[type=file]").files[0];
+        var reader = new FileReader();
+        reader.onloadend = function() {
+            target.src = reader.result;
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            target.src = "";
+        }
+    }
+</script>
+
+<!--SCRIPT PARA CARREGAR IMAGENS DO PRODUTO -->
+<script type="text/javascript">
+    function uploadImageProduct() {
+        var target = document.getElementById('targetImgProduct');
+        var file = document.querySelector("input[id=imgproduct]").files[0];
         var reader = new FileReader();
         reader.onloadend = function() {
             target.src = reader.result;
@@ -520,10 +672,8 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
 <script type="text/javascript">
     $(document).ready(function() {
         var pag = "<?= $pag ?>";
-
         $('#btn-delete').click(function(event) {
             event.preventDefault();
-
             $.ajax({
                 url: "pages/" + pag + "/deleted.php",
                 method: "post",
@@ -543,4 +693,39 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
             });
         });
     });
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+  var pag = "<?= $pag ?>";
+
+  $('#btn-deleted-img').click(function(event) {
+    event.preventDefault();
+    $.ajax({
+      // use exatamente o nome do arquivo que você tem aí.
+      // se o seu PHP se chama "deleted-image.php", deixe assim.
+      // se é "deleted-images.php", ajuste aqui.
+      url: "pages/" + pag + "/deleted-images.php",
+      method: "POST",
+      data: $('#form-delete-img').serialize(),   // <– form da modal de imagem
+      dataType: "text",
+      success: function(message) {
+        message = $.trim(message);
+        $('#message-deleted-img').removeClass('text-danger text-success');
+
+        if (message === "Excluído com Sucesso!!") {
+          $('#btn-cancel-img').click();          // fecha a modal
+          listImagesProduct();                   // recarrega a listagem
+        } else {
+          $('#message-deleted-img').addClass('text-danger').text(message || 'Falha ao excluir.');
+        }
+      },
+      error: function() {
+        $('#message-deleted-img')
+          .removeClass('text-success').addClass('text-danger')
+          .text('Erro ao chamar o script de exclusão.');
+      }
+    });
+  });
+});
+
 </script>
