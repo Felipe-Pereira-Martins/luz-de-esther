@@ -60,6 +60,8 @@
                 include_once($menu8 . ".php");
             } else if ($pag == $menu9) {
                 include_once($menu9 . ".php");
+            } else if ($pag == $menu10) {
+                include_once($menu10 . ".php");
             } else {
                 include_once("home.php");
             }

@@ -25,6 +25,7 @@
                             <a class="collapse-item" href="index.php?pag=<?php echo $menu2 ?>">Categorias</a>
                             <a class="collapse-item" href="index.php?pag=<?php echo $menu3 ?>">Sub-Categorias</a>
                             <a class="collapse-item" href="index.php?pag=<?php echo $menu9 ?>">Tipo Envios</a>
+                            <a class="collapse-item" href="index.php?pag=<?php echo $menu10 ?>">Características</a>
                         </div>
                     </div>
                 </li>

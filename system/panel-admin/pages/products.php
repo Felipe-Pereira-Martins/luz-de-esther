@@ -64,7 +64,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         }
                     ?>
                         <tr>
-                            <td><i class="fas fa-check-circle <?= $class ?>"></i> <?= $name ?></td>
+                            <td><i class="fas fa-check-circle <?= $class ?>"></i> <a href="" class="text-info"><?= $name ?></td>
                             <td>R$ <?php echo $value ?></td>
                             <td> <?php echo $stock ?></td>
                             <td><?php echo $catName ?></td>

@@ -17,6 +17,7 @@
     $menu7 = "sales";
     $menu8 = "backup";
     $menu9 = "shipping-type";
+    $menu10 = "feature";
 
 
     // CONSULTAR O BANCO DE DADOS E TRAZER OS DADOS DO USUÁRIO
