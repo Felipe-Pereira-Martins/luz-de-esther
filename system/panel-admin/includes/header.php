@@ -62,7 +62,6 @@
     <link rel="shortcut icon" href="../../assets/img/favicon.ico" type="image/x-icon">
     <link rel="icon" href="../../assets/img/favicon.ico" type="image/x-icon">
 
-    
 
 </head>
 
