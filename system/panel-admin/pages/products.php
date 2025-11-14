@@ -1,7 +1,6 @@
 <?php
 $pag = $_GET['pag'] ?? 'products';
 require_once(realpath(__DIR__ . '/../../../config/config.php'));
-// ✅ Verificação de autenticação e autorização
 // Garante que apenas usuários autenticados com nível 'Admin' possam acessar esta página.
 if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
     // ✅ Redireciona para página inicial se não estiver autenticado ou não for admin
@@ -62,13 +61,8 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                             $class = "text-danger";
                         }
                     ?>
-<<<<<<< Updated upstream
-                        <tr>
-                            <td><i class="fas fa-check-circle <?= $class ?>"></i> <?= $name ?></td>
-=======
                         <tr> <!-- Passa a função de característica e o ID -- Campo de Adiconar Característica -->
                             <td><i class="fas fa-check-circle <?= $class ?>"></i> <a href="index.php?pag=<?php echo $pag ?>&function=feature&id=<?= $id ?>" class="text-info"><?= $name ?></a></td>
->>>>>>> Stashed changes
                             <td>R$ <?php echo $value ?></td>
                             <td> <?php echo $stock ?></td>
                             <td><?php echo $catName ?></td>
@@ -527,9 +521,16 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
     </div>
 </div>
 
+<!-- Modal adicionar item -->
 <div class="modal" id="modalAddItem" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
+            <form method="post" id="form-item-list">
+                <input type="hidden" name="id_feature_item2" id="id_feature_item2">
+                <button type="submit" id="btn-item-list" name="btn-item-list" style="display:none;"></button>
+            </form>
+
+            <!-- FORMULÁRIO PRINCIPAL -->
             <form method="post" id="form-add-item">
                 <div class="modal-header">
                     <h5 class="modal-title">Adicionar Item</h5>
@@ -538,35 +539,60 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" name="id_feature_item2" id="id_feature_item2">
-                    <form action="post" id="form-item">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>*Descrição</label>
-                                <input value="<?php echo $name2 ?>" type="text" class="form-control" id="name-item" name="name-item" placeholder="Descrição do Item">
+                                <input type="text" class="form-control" id="name-item" name="name-item" placeholder="Descrição do Item">
                             </div>
                             <div class="form-group">
                                 <label>Valor Item <small>Se Existir - (EX: Código Hexadecimal da Cor)</small></label>
-                                <input value="<?php echo $name2 ?>" type="text" class="form-control" id="value-item" name="value-item" placeholder="Valor do Item EX #FFFFFF">
+                                <input type="text" class="form-control" id="value-item" name="value-item" placeholder="Valor do Item EX #FFFFFF">
                             </div>
                         </div>
 
                         <div class="col-md-6" id="list-items">
+                            
                         </div>
                     </div>
                     <div align="center" id="message_item" class=""></div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-cancel-Item">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <input type="hidden" name="id_feature_item" id="id_feature_item">
                     <button type="button" id="btn-item" name="btn-item" class="btn btn-info">Adicionar</button>
                 </div>
-
             </form>
         </div>
     </div>
 </div>
+
+<!-- Modal deletar item -->
+<div class="modal" id="modalDeletedItem" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Excluir Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Deseja realmente excluir este item?</p>
+                <div align="center" id="message-deleted-item" class=""></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-cancel-item-deleted">Cancelar</button>
+                <form method="post" id="form-deleted-item">
+                    <input type="hidden" name="id_feature_item" id="id_feature_item">
+                    <button type="button" id="btn-deleted-item" name="btn-deleted-item" class="btn btn-danger">Excluir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <?php
 if (isset($_GET["function"])) {
@@ -590,7 +616,6 @@ if (isset($_GET["function"])) {
     $(document).ready(function() {
         listImagesProduct(); // Carrega as imagens dos produtos
         listFeature(); // Carrega as características
-        lisItem(); // Carrega os itens das características
         document.getElementById('txtCategorie').value = document.getElementById('categorie').value; // Sincroniza valores
         listSubCategorie(); // Carrega as subcategorias
     });
@@ -644,13 +669,33 @@ if (isset($_GET["function"])) {
     }
 </script>
 
+<!-- ABRIR MODAL PARA DELETAR ITEM DA CARACTERÍSTICA -->
+<script type="text/javascript">
+    function deletedItem(id) {
+        var element = document.getElementById('id_feature_item');
+        
+        if (element) {
+            element.value = id;
+            $('#modalDeletedItem').modal('show');
+        } else {
+            console.error("❌ Elemento id_feature_item NÃO ENCONTRADO!");
+        }
+    }
+</script>
+
 <!-- ABRIR MODAL PARA ADICIONAR ITEM A CARACTERÍSTICA -->
 <script type="text/javascript">
     function addItem(id) {
-        document.getElementById('id_feature_item').value = id; // Define o ID da característica
-        document.getElementById('id_feature_item2').value = id; // Define o ID da característica
-        $('#modalAddItem').modal('show'); // Abre o modal de confirmação
-    }
+    // Define os IDs
+    $('#id_feature_item').val(id);
+    $('#id_feature_item2').val(id);
+    
+    $('#modalAddItem').one('shown.bs.modal', function() {
+        $('#btn-item-list').click();
+    });
+    
+    $('#modalAddItem').modal('show');
+}
 </script>
 
 <!-- ENVIAR FOTOS DO PRODUTO VIA AJAX (COM UPLOAD DE ARQUIVO) -->
@@ -853,22 +898,14 @@ if (isset($_GET["function"])) {
             }
         });
     });
-
-    /* CÓDIGO COMENTADO - POSSIVELMENTE PARA FUTURA IMPLEMENTAÇÃO
-    $('#btn-close-register').click(function() {
-        closeModal('modal-register');
-        $('#form-register')[0].reset();
-        $('#div-message').removeClass('text-danger text-success').text('');
-    });
-    */
 </script>
 
-<!-- ADICIONAR ITEM A CARACTERÍSTICA -->
+<!-- ADICIONAR ITEM A CARACTERÍSTICA - MODAL ABERTO -->
 <script type="text/javascript">
     $('#btn-item').click(function(event) {
         event.preventDefault();
         var pag = "<?= $pag ?>";
-        
+
         // Limpa a mensagem anterior
         $('#message_item').removeClass('text-success text-danger').text('');
 
@@ -879,29 +916,40 @@ if (isset($_GET["function"])) {
             dataType: "text",
             success: function(msg) {
                 const message = msg.trim();
-                
+
                 if (message === 'Salvo com sucesso!!') {
-                    $('#message_item').addClass('text-success').text(message);
+                    // SUCESSO - MANTÉM MODAL ABERTO
+                    $('#message_item').removeClass('text-danger').addClass('text-success').text('✅ Item adicionado com sucesso!');
                     
-                    // Fecha o modal após 2 segundos (tempo ideal)
-                    setTimeout(function() {
-                        $('#modalAddItem').modal('hide');
-                    }, 2000);
+                    // LIMPA OS CAMPOS para novo item
+                    $('#name-item').val('');
+                    $('#value-item').val('');
+                    $('#name-item').focus(); // Foca no primeiro campo
+                    
+                    // RECARREGA A LISTA de itens
+                    $('#btn-item-list').click();
                     
                 } else {
-                    $('#message_item').addClass('text-danger').text(message);
+                    // ERRO - Mostra mensagem
+                    $('#message_item').removeClass('text-success').addClass('text-danger').text('❌ ' + message);
                 }
             },
             error: function() {
-                $('#message_item').addClass('text-danger').text('Erro ao adicionar item!');
+                $('#message_item').removeClass('text-success').addClass('text-danger').text('❌ Erro ao adicionar item!');
             }
         });
     });
-    
-    // Limpar mensagem quando o modal for fechado
-    $('#modalAddItem').on('hidden.bs.modal', function () {
+
+    // FOCUS AUTOMÁTICO NO CAMPO NOME QUANDO MODAL ABRIR
+    $('#modalAddItem').on('shown.bs.modal', function() {
+        $('#name-item').focus();
+    });
+
+    // LIMPAR CAMPOS QUANDO MODAL FECHAR
+    $('#modalAddItem').on('hidden.bs.modal', function() {
+        $('#name-item').val('');
+        $('#value-item').val('');
         $('#message_item').removeClass('text-success text-danger').text('');
-        $('#form-add-item')[0].reset();
     });
 </script>
 
@@ -921,20 +969,25 @@ if (isset($_GET["function"])) {
     }
 </script>
 
-<!-- LISTAR ITEM -->
+<!-- LISTAR ITEM COM DEBUG -->
 <script type="text/javascript">
-    function lisItem() {
+    $('#btn-item-list').click(function(event) {
+        event.preventDefault();
         var pag = "<?= $pag ?>";
+
         $.ajax({
-            url: "pages/" + pag + "/list-items.php", // Endpoint para listar características
+            url: "pages/" + pag + "/list-items.php",
             method: "post",
-            data: $('#form-item').serialize(),
+            data: $('#form-item-list').serialize(),
             dataType: "html",
             success: function(result) {
-                $('#list-items').html(result); /* Atualiza div com características */
+                $('#list-items').html(result);
+            },
+            error: function(xhr, status, error) {
+                $('#list-items').html('<p class="text-danger">Erro ao carregar itens</p>');
             }
-        })
-    }
+        });
+    });
 </script>
 
 <!-- EXCLUIR IMAGEM DA GALERIA -->
@@ -999,6 +1052,42 @@ if (isset($_GET["function"])) {
                 },
                 error: function() {
                     $('#message-deleted-feature')
+                        .removeClass('text-success').addClass('text-danger')
+                        .text('Erro ao chamar o script de exclusão.');
+                }
+            });
+        });
+    });
+</script>
+
+<!-- EXCLUIR ITEM DA CARACTERÍSTICA -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        var pag = "<?= $pag ?>";
+
+        $('#btn-deleted-item').off('click').on('click', function(event) {
+            event.preventDefault();
+            
+            var id = $('#id_feature_item').val();
+            
+            $.ajax({
+                url: "pages/" + pag + "/deleted-item.php",
+                method: "POST",
+                data: { id_feature_item: id },
+                dataType: "text",
+                success: function(message) {
+                    message = $.trim(message);
+                    $('#message-deleted-item').removeClass('text-danger text-success');
+
+                    if (message === "Excluído com Sucesso!!") {
+                        $('#btn-item-list').click(); 
+                        $('#modalDeletedItem').modal('hide');
+                    } else {
+                        $('#message-deleted-item').addClass('text-danger').text(message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $('#message-deleted-item')
                         .removeClass('text-success').addClass('text-danger')
                         .text('Erro ao chamar o script de exclusão.');
                 }
