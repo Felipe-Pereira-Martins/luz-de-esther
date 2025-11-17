@@ -129,188 +129,169 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
             </div>
 
             <form id="form-product" method="POST" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <!-- Linha 1: Nome, Categoria, Subcategoria, Valor -->
-                    <div class="row">
-                        <!-- Nome -->
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="form-group">
-                                <label>Nome</label>
-                                <input value="<?php echo $name2 ?>" type="text" class="form-control form-control-sm" id="name-category" name="name-category" placeholder="Nome">
-                            </div>
-                        </div>
-                        
-                        <!-- Valor -->
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="form-group">
-                                <label>Valor Produto</label>
-                                <input value="<?php echo $value2 ?>" type="text" class="form-control form-control-sm" id="value" name="value" placeholder="Valor">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Descrição Curta -->
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <div class="form-group">
-                                <label>Descrição Curta <small>(500 caracteres)</small></label>
-                                <textarea maxlength="500" class="form-control form-control-sm" id="description" name="description"><?php echo $description2 ?></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Descrição Longa -->
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <div class="form-group">
-                                <label>Descrição Longa</label>
-                                <textarea class="form-control form-control-sm" id="description_long" name="description_long"><?php echo $description_long2 ?></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Estoque, Tipo Envio, Ativo, Peso -->
-                    <div class="row">
-                        <!-- Estoque -->
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="form-group">
-                                <label>Estoque</label>
-                                <input value="<?php echo $stock2 ?>" type="text" class="form-control form-control-sm" id="stock" name="stock" placeholder="Quantidade">
-                            </div>
-                        </div>
-
-                        <!-- Tipo Envio -->
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="form-group">
-                                <label>Tipo Envio</label>
-                                <select class="form-control form-control-sm" name="shipping_type" id="shipping_type">
-                                    <?php
-                                    if (isset($_GET['function']) && $_GET['function'] === 'edit') {
-                                        $query = $pdo->query("SELECT * FROM shipping_type WHERE id = $shipping_type2");
-                                        $res = $query->fetchAll(PDO::FETCH_ASSOC);
-                                        if (!empty($res)) {
-                                            $nameType = $res[0]['name'];
-                                            echo "<option value='" . $shipping_type2 . "'>" . $nameType . "</option>";
-                                        }
-                                    }
-                                    $query2 = $pdo->query("SELECT * FROM shipping_type ORDER BY name ASC");
-                                    $res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
-                                    for ($i = 0; $i < count($res2); $i++) {
-                                        $idType = $res2[$i]['id'];
-                                        $nameType = $res2[$i]['name'];
-                                        if (!isset($shipping_type2) || $shipping_type2 != $idType) {
-                                            echo "<option value='" . $idType . "'>" . $nameType . "</option>";
-                                        }
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Ativo -->
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="form-group">
-                                <label>Ativo</label>
-                                <?php
-                                $enable2 = isset($enable2) ? trim($enable2) : '';
-                                $e = mb_strtolower($enable2, 'UTF-8');
-                                if ($e === 'sim')            $enable2 = 'Sim';
-                                elseif ($e === 'não' || $e === 'nao') $enable2 = 'Não';
-                                else                         $enable2 = 'Sim';
-                                ?>
-                                <select class="form-control form-control-sm" name="enable" id="enable">
-                                    <option value="Sim" <?= $enable2 === 'Sim' ? 'selected' : '' ?>>Sim</option>
-                                    <option value="Não" <?= $enable2 === 'Não' ? 'selected' : '' ?>>Não</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Peso -->
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="form-group">
-                                <label>Peso</label>
-                                <input value="<?php echo $weight2 ?>" type="text" class="form-control form-control-sm" id="weight" name="weight" placeholder="Peso">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Palavras Chaves -->
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <div class="form-group">
-                                <label>Palavras Chaves</label>
-                                <input value="<?php echo $words2 ?>" type="text" class="form-control form-control-sm" id="word" name="word" placeholder="Palavras Chave">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Dimensões e Modelo -->
-                    <div class="row">
-                        <!-- Largura -->
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="form-group">
-                                <label>Largura</label>
-                                <input value="<?php echo $width2 ?>" type="text" class="form-control form-control-sm" id="width" name="width" placeholder="Largura">
-                            </div>
-                        </div>
-
-                        <!-- Altura -->
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="form-group">
-                                <label>Altura</label>
-                                <input value="<?php echo $height2 ?>" type="text" class="form-control form-control-sm" id="height" name="height" placeholder="Altura">
-                            </div>
-                        </div>
-
-                        <!-- Modelo -->
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="form-group">
-                                <label>Modelo</label>
-                                <input value="<?php echo $model2 ?>" type="text" class="form-control form-control-sm" id="model" name="model" placeholder="Modelo">
-                            </div>
-                        </div>
-
-                        <!-- Valor Frete -->
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="form-group">
-                                <label for="shipping-value">Valor Frete</label>
-                                <input value="<?php echo $shipping_value2 ?>" type="text" class="form-control form-control-sm" id="shipping-value" name="shipping-value" placeholder="Valor Frete Fixo">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Imagem -->
-                    <div class="row align-items-start">
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="form-group">
-                                <label for="image">Imagem</label>
-                                <input type="file" class="form-control-file w-100" id="image" name="image" onchange="uploadImage();">
-                            </div>
-                            <div class="form-group mt-2 mb-0">
-                                <?php if (!empty($image2)) { ?>
-                                    <img src="../../../store/assets/img/products/<?php echo $image2 ?>" alt="Imagem do produto" width="100" id="target">
-                                <?php } else { ?>
-                                    <img src="../../../store/assets/img/products/no-photo.jpg" alt="Sem imagem" width="100" id="target">
-                                <?php } ?>
-                            </div>
-                        </div>
-                    </div>
-
-                    <small>
-                        <div id="message"></div>
-                    </small>
+    <div class="modal-body">
+        <!-- Linha 1: Nome, Valor, Tipo Envio, Ativo -->
+        <div class="row">
+            <!-- Nome -->
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="form-group">
+                    <label>Nome</label>
+                    <input value="<?php echo $name2 ?>" type="text" class="form-control form-control-sm" id="name-category" name="name-category" placeholder="Nome">
                 </div>
+            </div>
 
-                <div class="modal-footer">
-                    <input value="<?php echo $_GET['id'] ?? '' ?>" type="hidden" name="txtid2" id="txtid2">
-                    <input value="<?php echo $name2 ?>" type="hidden" name="old-name" id="old-name">
-                    <input type="hidden" name="old-image" value="<?php echo $image2 ?>">
-                    <button type="button" id="btn-closed" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" name="btn-save" id="btn-save" class="btn btn-primary">Salvar</button>
+            <!-- Valor -->
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="form-group">
+                    <label>Valor</label>
+                    <input value="<?php echo $value2 ?>" type="text" class="form-control form-control-sm" id="value" name="value" placeholder="Valor">
                 </div>
-            </form>
+            </div>
+
+            <!-- Tipo Envio -->
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="form-group">
+                    <label>Tipo Envio</label>
+                    <select class="form-control form-control-sm" name="shipping_type" id="shipping_type">
+                        <?php
+                        if (isset($_GET['function']) && $_GET['function'] === 'edit') {
+                            $query = $pdo->query("SELECT * FROM shipping_type WHERE id = $shipping_type2");
+                            $res = $query->fetchAll(PDO::FETCH_ASSOC);
+                            if (!empty($res)) {
+                                $nameType = $res[0]['name'];
+                                echo "<option value='" . $shipping_type2 . "'>" . $nameType . "</option>";
+                            }
+                        }
+                        $query2 = $pdo->query("SELECT * FROM shipping_type ORDER BY name ASC");
+                        $res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
+                        for ($i = 0; $i < count($res2); $i++) {
+                            $idType = $res2[$i]['id'];
+                            $nameType = $res2[$i]['name'];
+                            if (!isset($shipping_type2) || $shipping_type2 != $idType) {
+                                echo "<option value='" . $idType . "'>" . $nameType . "</option>";
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Ativo -->
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="form-group">
+                    <label>Ativo</label>
+                    <?php
+                    $enable2 = isset($enable2) ? trim($enable2) : '';
+                    $e = mb_strtolower($enable2, 'UTF-8');
+                    if ($e === 'sim')            $enable2 = 'Sim';
+                    elseif ($e === 'não' || $e === 'nao') $enable2 = 'Não';
+                    else                         $enable2 = 'Sim';
+                    ?>
+                    <select class="form-control form-control-sm" name="enable" id="enable">
+                        <option value="Sim" <?= $enable2 === 'Sim' ? 'selected' : '' ?>>Sim</option>
+                        <option value="Não" <?= $enable2 === 'Não' ? 'selected' : '' ?>>Não</option>
+                    </select>
+                </div>
+            </div>
         </div>
+
+        <!-- Descrição Curta -->
+        <div class="row">
+            <div class="col-12 mb-3">
+                <div class="form-group">
+                    <label>Descrição Curta <small>(1000 caracteres)</small></label>
+                    <textarea maxlength="1000" class="form-control form-control-sm" id="description" name="description" placeholder="Descrição curta do produto"><?php echo $description2 ?></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Descrição Longa -->
+        <div class="row">
+            <div class="col-12 mb-3">
+                <div class="form-group">
+                    <label>Descrição Longa</label>
+                    <textarea class="form-control form-control-sm" id="description_long" name="description_long" placeholder="Descrição completa do produto"><?php echo $description_long2 ?></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Palavras Chaves -->
+        <div class="row">
+            <div class="col-12 mb-3">
+                <div class="form-group">
+                    <label>Palavras Chaves</label>
+                    <input value="<?php echo $words2 ?>" type="text" class="form-control form-control-sm" id="word" name="word" placeholder="Palavras chave separadas por vírgula">
+                </div>
+            </div>
+        </div>
+
+        <!-- Dimensões e Peso -->
+        <div class="row">
+            <!-- Peso -->
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="form-group">
+                    <label>Peso (kg)</label>
+                    <input value="<?php echo $weight2 ?>" type="text" class="form-control form-control-sm" id="weight" name="weight" placeholder="Peso">
+                </div>
+            </div>
+
+            <!-- Largura -->
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="form-group">
+                    <label>Largura (cm)</label>
+                    <input value="<?php echo $width2 ?>" type="text" class="form-control form-control-sm" id="width" name="width" placeholder="Largura">
+                </div>
+            </div>
+
+            <!-- Altura -->
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="form-group">
+                    <label>Altura (cm)</label>
+                    <input value="<?php echo $height2 ?>" type="text" class="form-control form-control-sm" id="height" name="height" placeholder="Altura">
+                </div>
+            </div>
+
+            <!-- Comprimento -->
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="form-group">
+                    <label>Comprimento (cm)</label>
+                    <input value="<?php echo $length2 ?>" type="text" class="form-control form-control-sm" id="length" name="length" placeholder="Comprimento">
+                </div>
+            </div>
+        </div>
+
+        <!-- Imagem -->
+        <div class="row align-items-start">
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="form-group">
+                    <label for="image">Imagem</label>
+                    <input type="file" class="form-control-file w-100" id="image" name="image" onchange="uploadImage();">
+                </div>
+                <div class="form-group mt-2 mb-0">
+                    <?php if (!empty($image2)) { ?>
+                        <img src="../../../store/assets/img/products/<?php echo $image2 ?>" alt="Imagem do produto" width="100" id="target">
+                    <?php } else { ?>
+                        <img src="../../../store/assets/img/products/no-photo.jpg" alt="Sem imagem" width="100" id="target">
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+
+        <small>
+            <div id="message"></div>
+        </small>
     </div>
+
+    <div class="modal-footer">
+        <input value="<?php echo $_GET['id'] ?? '' ?>" type="hidden" name="txtid2" id="txtid2">
+        <input value="<?php echo $name2 ?>" type="hidden" name="old-name" id="old-name">
+        <input type="hidden" name="old-image" value="<?php echo $image2 ?>">
+        <button type="button" id="btn-closed" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="submit" name="btn-save" id="btn-save" class="btn btn-primary">Salvar</button>
+    </div>
+    </form>
+</div>
+</div>
 </div>
 
 <!-- Modal Delete -->
@@ -338,75 +319,12 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
     </div>
 </div>
 
-<!-- Modal para inserir imagem -->
-<div class="modal" id="modal-images" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Imagens do Produto</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="form-photos" method="POST" enctype="multipart/form-data">
-                    <div class="row">
-                        <div class="col-md-5">
-                            <div class="col-md-12 form-group">
-                                <label>Imagem do Produto</label>
-                                <input type="file" class="form-control-file" id="imgproduct" name="imgproduct" onchange="uploadImageProduct();">
-                            </div>
-                            <div class="col-md-12 mb-2">
-                                <img src="../../../store/assets/img/products/details/no-photo.jpg" alt="Carregue sua Imagem" id="targetImgProduct" width="100%">
-                            </div>
-                        </div>
-                        <div class="col-md-7" id="list-img-products"></div>
-                    </div>
-                    <div class="col-md-12" align="right">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-cancel-photos">Cancelar</button>
-                        <input type="hidden" id="id_product_images" name="id" value="<?= $_GET['id'] ?>" required>
-                        <button type="submit" id="btn-fotos" name="btn-photos" class="btn btn-info">Salvar</button>
-                    </div>
-                    <small>
-                        <div align="center" id="message_photos" class=""></div>
-                    </small>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal deletar imagem -->
-<div class="modal" id="modalDeletedImg" tabindex="-1" role="dialog">
+<!-- Modal Products -->
+<div class="modal" id="modal-products" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Excluir Registro</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Deseja realmente excluir esta Imagem?</p>
-                <div align="center" id="message-deleted-img" class=""></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-cancel-img">Cancelar</button>
-                <form method="post" id="form-delete-img">
-                    <input type="hidden" name="id_photo_img" id="id_photo_img">
-                    <button type="button" id="btn-deleted-img" name="btn-deleted-img" class="btn btn-danger">Excluir</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Feature -->
-<div class="modal" id="modal-feature" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Adicionar Característica</h5>
+                <h5 class="modal-title">Adicionar Produtos</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -414,30 +332,14 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
             <form id="form-feature">
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Característica</label>
-                                <select class="form-control form-control-sm" name="feature" id="feature">
-                                    <?php
-                                    $query2 = $pdo->query("SELECT * FROM feature ORDER BY name ASC");
-                                    $res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
-                                    for ($i = 0; $i < count($res2); $i++) {
-                                        $idCat = $res2[$i]['id'];
-                                        $nameCat = $res2[$i]['name'];
-                                        echo "<option value='" . $idCat . "'>" . $nameCat . "</option>";
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6" id="list-feature"></div>
+        
                     </div>
-                    <div id="message_feature" class=""></div>
+                    <div id="message_products" class=""></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-cancel-feature">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-cancel-products">Cancelar</button>
                     <input type="hidden" id="txtid" name="txtid" value="<?= $_GET['id'] ?? '' ?>" required>
-                    <button type="button" id="btn-add-feature" name="btn-add-feature" class="btn btn-info">Adicionar</button>
+                    <button type="button" id="btn-add-products" name="btn-add-products" class="btn btn-info">Adicionar</button>
                 </div>
             </form>
         </div>

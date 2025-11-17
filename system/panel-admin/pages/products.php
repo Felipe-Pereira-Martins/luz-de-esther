@@ -205,7 +205,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                     <div class="row">
                         <div class="col-12 mb-3">
                             <div class="form-group">
-                                <label>Descrição Curta <small>(500 caracteres)</small></label>
+                                <label>Descrição Curta <small>(1000 caracteres)</small></label>
                                 <textarea maxlength="500" class="form-control form-control-sm" id="description" name="description"><?php echo $description2 ?></textarea>
                             </div>
                         </div>
@@ -217,6 +217,16 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                             <div class="form-group">
                                 <label>Descrição Longa</label>
                                 <textarea class="form-control form-control-sm" id="description_long" name="description_long"><?php echo $description_long2 ?></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Palavras Chaves -->
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <div class="form-group">
+                                <label>Palavras Chaves</label>
+                                <input value="<?php echo $words2 ?>" type="text" class="form-control form-control-sm" id="word" name="word" placeholder="Palavras Chave">
                             </div>
                         </div>
                     </div>
@@ -286,17 +296,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         </div>
                     </div>
 
-                    <!-- Palavras Chaves -->
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <div class="form-group">
-                                <label>Palavras Chaves</label>
-                                <input value="<?php echo $words2 ?>" type="text" class="form-control form-control-sm" id="word" name="word" placeholder="Palavras Chave">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Dimensões e Modelo -->
+                    <!-- Dimensões, Modelo e Valor Frete -->
                     <div class="row">
                         <!-- Largura -->
                         <div class="col-lg-3 col-md-6 mb-3">
@@ -314,6 +314,14 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                             </div>
                         </div>
 
+                        <!-- Comprimento -->
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="form-group">
+                                <label>Comprimento</label>
+                                <input value="<?php echo $length2 ?>" type="text" class="form-control form-control-sm" id="length" name="length" placeholder="Comprimento">
+                            </div>
+                        </div>
+
                         <!-- Modelo -->
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
@@ -321,7 +329,10 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                                 <input value="<?php echo $model2 ?>" type="text" class="form-control form-control-sm" id="model" name="model" placeholder="Modelo">
                             </div>
                         </div>
+                    </div>
 
+                    <!-- Valor Frete e Imagem -->
+                    <div class="row align-items-start">
                         <!-- Valor Frete -->
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
@@ -329,10 +340,8 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                                 <input value="<?php echo $shipping_value2 ?>" type="text" class="form-control form-control-sm" id="shipping-value" name="shipping-value" placeholder="Valor Frete Fixo">
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Imagem -->
-                    <div class="row align-items-start">
+                        <!-- Imagem -->
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
                                 <label for="image">Imagem</label>
@@ -552,7 +561,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         </div>
 
                         <div class="col-md-6" id="list-items">
-                            
+
                         </div>
                     </div>
                     <div align="center" id="message_item" class=""></div>
@@ -673,7 +682,7 @@ if (isset($_GET["function"])) {
 <script type="text/javascript">
     function deletedItem(id) {
         var element = document.getElementById('id_feature_item');
-        
+
         if (element) {
             element.value = id;
             $('#modalDeletedItem').modal('show');
@@ -686,16 +695,16 @@ if (isset($_GET["function"])) {
 <!-- ABRIR MODAL PARA ADICIONAR ITEM A CARACTERÍSTICA -->
 <script type="text/javascript">
     function addItem(id) {
-    // Define os IDs
-    $('#id_feature_item').val(id);
-    $('#id_feature_item2').val(id);
-    
-    $('#modalAddItem').one('shown.bs.modal', function() {
-        $('#btn-item-list').click();
-    });
-    
-    $('#modalAddItem').modal('show');
-}
+        // Define os IDs
+        $('#id_feature_item').val(id);
+        $('#id_feature_item2').val(id);
+
+        $('#modalAddItem').one('shown.bs.modal', function() {
+            $('#btn-item-list').click();
+        });
+
+        $('#modalAddItem').modal('show');
+    }
 </script>
 
 <!-- ENVIAR FOTOS DO PRODUTO VIA AJAX (COM UPLOAD DE ARQUIVO) -->
@@ -920,15 +929,15 @@ if (isset($_GET["function"])) {
                 if (message === 'Salvo com sucesso!!') {
                     // SUCESSO - MANTÉM MODAL ABERTO
                     $('#message_item').removeClass('text-danger').addClass('text-success').text('✅ Item adicionado com sucesso!');
-                    
+
                     // LIMPA OS CAMPOS para novo item
                     $('#name-item').val('');
                     $('#value-item').val('');
                     $('#name-item').focus(); // Foca no primeiro campo
-                    
+
                     // RECARREGA A LISTA de itens
                     $('#btn-item-list').click();
-                    
+
                 } else {
                     // ERRO - Mostra mensagem
                     $('#message_item').removeClass('text-success').addClass('text-danger').text('❌ ' + message);
@@ -1067,20 +1076,22 @@ if (isset($_GET["function"])) {
 
         $('#btn-deleted-item').off('click').on('click', function(event) {
             event.preventDefault();
-            
+
             var id = $('#id_feature_item').val();
-            
+
             $.ajax({
                 url: "pages/" + pag + "/deleted-item.php",
                 method: "POST",
-                data: { id_feature_item: id },
+                data: {
+                    id_feature_item: id
+                },
                 dataType: "text",
                 success: function(message) {
                     message = $.trim(message);
                     $('#message-deleted-item').removeClass('text-danger text-success');
 
                     if (message === "Excluído com Sucesso!!") {
-                        $('#btn-item-list').click(); 
+                        $('#btn-item-list').click();
                         $('#modalDeletedItem').modal('hide');
                     } else {
                         $('#message-deleted-item').addClass('text-danger').text(message);
