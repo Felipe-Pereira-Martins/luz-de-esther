@@ -44,9 +44,12 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         $value = number_format($value, 2, ',', '.');
 
                         /* Seleciona a tabela bundles que vem do banco de dados */
-                        $query2 = $pdo->query("SELECT * FROM bundles ORDER BY id DESC");
+                        /* Explicação do que será feito, imagine o combo de 5 camisetas, a tabela products_bundles vai ter 5 registro relacionado ao combo,
+                         no caso o combo é de id1, por ser o primeiro que criamos, vai passar e verficar que as 5 camisetas irão ter o id 1, quando ele passar 
+                         vai retornar essa quantidade na váriavel $total_products  */
+                        $query2 = $pdo->query("SELECT * FROM products_bundles where id_bundles = '$id'"); //Tabela que vai armazenar os produtos do combo
                         $res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
-                        $total_products = count($res2);
+                        $total_products = count($res2); // Conta o total de produtos no combo
                         /* classe, se o produto tiver ativo fica verde se não fica vermelho */
                         $class = "";
                         if ($enable == "Sim") {
@@ -58,18 +61,14 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         <tr> <!-- Passa a função de característica e o ID -- Campo de Adiconar Característica -->
                             <td><i class="fas fa-check-circle <?= $class ?>"></i> <a href="index.php?pag=<?php echo $pag ?>&function=feature&id=<?= $id ?>" class="text-info"><?= $name ?></a></td>
                             <td>R$ <?php echo $value ?></td>
-                            <td> <?php echo $stock ?></td>
-                            <td><?php echo $catName ?></td>
-                            <td><img src="../../../store/assets/img/products/<?= $images ?>" alt="Imagem dos itens" width="50"></td>
+                            <td> <?php echo $total_products ?></td>
+                            <td><img src="../../../store/assets/img/bundles/<?= $images ?>" alt="Imagem dos itens" width="50"></td>
                             <td>
                                 <a href="index.php?pag=<?= $pag ?>&function=edit&id=<?= $id ?>" class='text-primary mr-1' title='Editar Dados'>
                                     <i class='far fa-edit'></i>
                                 </a>
                                 <a href="index.php?pag=<?= $pag ?>&function=deleted&id=<?= $id ?>" class='text-danger mr-1' title='Excluir Registro'>
                                     <i class='far fa-trash-alt'></i>
-                                </a>
-                                <a href="index.php?pag=<?= $pag ?>&function=images&id=<?= $id ?>" class='text-secondary' title='Inserir Imagens'>
-                                    <i class="fas fa-images"></i>
                                 </a>
                             </td>
                         </tr>
@@ -92,28 +91,23 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                 $value2 = '';
                 $description2 = '';
                 $description_long2 = '';
-                $stock2 = '';
                 $words2 = '';
                 $weight2 = '';
                 $width2 = '';
                 $height2 = '';
                 $length2 = '';
-                $model2 = '';
                 $shipping_value2 = '';
-                $name_categorie2 = '';
                 $title = "Inserir Registro";
 
                 if (isset($_GET['function']) && $_GET['function'] === 'edit') {
                     $title = "Editar Registro";
                     $id2 = $_GET['id'] ?? '';
-                    $query = $pdo->query("SELECT * FROM products WHERE id = '$id2'");
+                    $query = $pdo->query("SELECT * FROM bundles WHERE id = '$id2'");
                     $res = $query->fetchAll(PDO::FETCH_ASSOC);
                     if (!empty($res)) {
                         $name2 = $res[0]['name'] ?? '';
                         $image2 = $res[0]['image'] ?? '';
-                        $sub_categorie2 = $res[0]['sub_categorie'] ?? '';
                         $value2 = $res[0]['value'] ?? '';
-                        $stock2 = $res[0]['stock'] ?? '';
                         $description2 = $res[0]['description'] ?? '';
                         $description_long2 = $res[0]['description_long'] ?? '';
                         $shipping_type2 = $res[0]['shipping_type'] ?? '';
@@ -123,9 +117,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                         $width2 = $res[0]['width'] ?? '';
                         $height2 = $res[0]['height'] ?? '';
                         $length2 = $res[0]['length'] ?? '';
-                        $model2 = $res[0]['model'] ?? '';
                         $shipping_value2 = $res[0]['shipping_value'] ?? '';
-                        $name_categorie2 = $res[0]['categorie'] ?? '';
                     }
                 }
                 ?>
@@ -147,45 +139,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                                 <input value="<?php echo $name2 ?>" type="text" class="form-control form-control-sm" id="name-category" name="name-category" placeholder="Nome">
                             </div>
                         </div>
-
-                        <!-- Categoria -->
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="form-group">
-                                <label>Categoria</label>
-                                <select class="form-control form-control-sm" name="categorie" id="categorie">
-                                    <?php
-                                    if (isset($_GET['function']) && $_GET['function'] === 'edit') {
-                                        $query = $pdo->query("SELECT * FROM categories WHERE id = '$name_categorie2'");
-                                        $res = $query->fetchAll(PDO::FETCH_ASSOC);
-                                        if (!empty($res)) {
-                                            $nameCategorie = $res[0]['name'];
-                                            echo "<option value='" . $name_categorie2 . "'>" . $nameCategorie . "</option>";
-                                        }
-                                    }
-                                    $query2 = $pdo->query("SELECT * FROM categories ORDER BY name ASC");
-                                    $res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
-                                    for ($i = 0; $i < count($res2); $i++) {
-                                        $idCat = $res2[$i]['id'];
-                                        $nameCat = $res2[$i]['name'];
-                                        if (!isset($name_categorie2) || $name_categorie2 != $idCat) {
-                                            echo "<option value='" . $idCat . "'>" . $nameCat . "</option>";
-                                        }
-                                    }
-                                    ?>
-                                </select>
-                                <input type="hidden" id="txtCategorie" name="txtCategorie">
-                                <input value="<?= $sub_categorie2 ?> " type="hidden" id="txtSubCategorie" name="txtSubCategorie">
-                            </div>
-                        </div>
-
-                        <!-- Sub Categoria -->
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="form-group">
-                                <label>Sub Categoria</label>
-                                <span id="list-subcategorie"></span>
-                            </div>
-                        </div>
-
+                        
                         <!-- Valor -->
                         <div class="col-lg-3 col-md-6 mb-3">
                             <div class="form-group">
