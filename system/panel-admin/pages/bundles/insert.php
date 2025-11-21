@@ -73,7 +73,7 @@ $name_url = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $name_new));
 $old = $_POST['old-name'] ?? ''; // Nome antigo (para possíveis comparações)
 
 // =============================================
-// VALIDAÇÃO DE CAMPOS OBRIGATÓRIOS
+// VALIDAÇÃO DE CAMPOS OBRIGATÓRIOS - CORRIGIDO
 // =============================================
 $requiredFields = [
     'name-category'     => 'PREENCHA O CAMPO NOME!',
@@ -90,15 +90,14 @@ $requiredFields = [
     'shipping_value'    => 'PREENCHA O VALOR DO FRETE!'
 ]; 
 
-// Verifica cada campo obrigatório
+// Verifica cada campo obrigatório - USANDO VARIÁVEL DIFERENTE
 foreach ($requiredFields as $field => $message) {
-    $value = $_POST[$field] ?? '';
-    if (trim($value) === '') {
+    $fieldValue = $_POST[$field] ?? ''; // ⭐ Mudei para $fieldValue
+    if (trim($fieldValue) === '') {
         echo $message;
         exit();
     }
 }
-
 // =============================================
 // PROCESSAMENTO DE UPLOAD DE IMAGEM
 // =============================================

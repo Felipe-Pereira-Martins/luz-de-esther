@@ -3,7 +3,7 @@ $pag = $_GET['pag'] ?? 'bundles'; /* pega a tabela do banco de dados */
 require_once(realpath(__DIR__ . '/../../../config/config.php'));
 // Garante que apenas usuários autenticados com nível 'Admin' possam acessar esta página.
 if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
-    // ✅ Redireciona para página inicial se não estiver autenticado ou não for admin
+    // Redireciona para página inicial se não estiver autenticado ou não for admin
     header("Location: ../index.php");
     exit;
 }
@@ -292,7 +292,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
                 </div>
 
                 <div class="modal-footer">
-                    <input value="<?php echo $_GET['id'] ?? '' ?>" type="hidden" name="txtid2" id="txtid2">
+                    <input value="<?php echo $id2 ?>" type="hidden" name="txtid2" id="txtid2">
                     <input value="<?php echo $name2 ?>" type="hidden" name="old-name" id="old-name">
                     <input type="hidden" name="old-image" value="<?php echo $image2 ?>">
                     <button type="button" id="btn-closed" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -330,27 +330,78 @@ if (!isset($_SESSION['id_user']) || $_SESSION['level_user'] !== 'Admin') {
 
 <!-- Modal Products -->
 <div class="modal" id="modal-products" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Adicionar Produtos</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
                 </button>
             </div>
-            <form id="form-feature">
-                <div class="modal-body">
-                    <div class="row">
 
+            <div class="modal-body pb-2">
+                <div class="row">
+                    <!-- LISTA DE PRODUTOS -->
+                    <div class="col-12 col-md-9">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-sm mb-0" id="dataTable2">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="py-1 px-2">Nome</th>
+                                        <th class="py-1 px-2 text-nowrap">Valor</th>
+                                        <th class="py-1 px-2 text-center" style="width:45px">Add</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $query = $pdo->query("SELECT * FROM products WHERE enable = 'Sim' ORDER BY id DESC");
+                                    $res = $query->fetchAll(PDO::FETCH_ASSOC);
+
+                                    foreach ($res as $item) {
+                                        $name_product  = $item['name'] ?? '';
+                                        $value_product = number_format($item['value'] ?? 0, 2, ',', '.');
+                                        $id_product    = $item['id'] ?? '';
+                                    ?>
+                                        <tr>
+                                            <td class="py-1 align-middle"><?= $name_product ?></td>
+                                            <td class="py-1 align-middle text-nowrap">R$ <?= $value_product ?></td>
+                                            <td class="py-1 text-center align-middle">
+                                                <a href="index.php?pag=<?= $pag ?>&function=add&id=<?= $id_product ?>"
+                                                    class="text-success" title="Adicionar Produto">
+                                                    <i class="fas fa-check"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div id="message_products" class=""></div>
+                    <!-- PRODUTOS DO PACOTE -->
+                    <div class="col-12 col-md-3 mt-4 mt-md-0">
+                        <p class="mb-2"><strong>Produtos do Pacote</strong></p>
+                        <div id="products-bundles" class="mb-2">
+                            
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+                            <small class="text-dark">Teste</small>
+                            <a href="index.php?pag=<?= $pag ?>&function=deleted-product&id=<?= $id ?>"
+                                class="text-danger" title="Excluir Registro">
+                                <i class="far fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-cancel-products">Cancelar</button>
-                    <input type="hidden" id="txtid" name="txtid" value="<?= $_GET['id'] ?? '' ?>" required>
-                    <button type="button" id="btn-add-products" name="btn-add-products" class="btn btn-info">Adicionar</button>
-                </div>
-            </form>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" name="txtid2" id="txtid2" value="<?php echo $_GET['id'] ?? '' ?>">
+                <input type="hidden" name="old-name" id="old-name" value="<?php echo $name2 ?>">
+                <input type="hidden" name="old-image" value="<?php echo $image2 ?>">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" name="btn-save" class="btn btn-primary">Salvar</button>
+            </div>
         </div>
     </div>
 </div>
@@ -394,11 +445,39 @@ if (isset($_GET["function"])) {
     <!-- SCRIPTS JAVASCRIPT PARA COMBOS -->
     <!-- INICIALIZAÇÃO DA PÁGINA -->
     <script type="text/javascript">
+        $(document).ready(function() {
+            listProduct(); // Lista os produtos 
+        });
+    </script>
+
+    <script type="text/javascript">
         /* Quando a página for carregada, executa estas funções */
         $(document).ready(function() {
             // Configuração da DataTable
             $('#dataTable').dataTable({
                 "ordering": false // Desabilita ordenação automática da tabela
+            });
+        });
+    </script>
+
+    <!-- INICIALIZAÇÃO DO SEGUNDO DATABLE -->
+    <script>
+        // Método mais direto - coloque isso na sua página
+        $(document).ready(function() {
+            // Inicializa o primeiro DataTable
+            $('#dataTable').DataTable();
+
+            // Inicializa o segundo DataTable
+            $('#dataTable2').DataTable();
+        });
+    </script>
+
+    <!-- DATATABLE2 NÃO RECEBEU ORDENAÇÃO -->
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Configuração da DataTable
+            $('#dataTable2').dataTable({
+                "ordering": false
             });
         });
     </script>
@@ -512,43 +591,27 @@ if (isset($_GET["function"])) {
         });
     </script>
 
-    <!-- EXCLUIR PRODUTO DO COMBO -->
-    <script type="text/javascript">
-        $(document).ready(function() {
-            var pag = "<?= $pag ?>";
-
-            $('#btn-deleted-product').click(function(event) {
-                event.preventDefault();
-
-                $.ajax({
-                    url: "pages/" + pag + "/deleted-product.php",
-                    method: "POST",
-                    data: $('#form-deleted-product').serialize(),
-                    dataType: "text",
-                    success: function(message) {
-                        message = $.trim(message);
-                        $('#message-deleted-product').removeClass('text-danger text-success');
-
-                        if (message === "Excluído com Sucesso!!") {
-                            $('#modalDeletedProduct').modal('hide');
-                            // Recarrega a página para atualizar a contagem de produtos
-                            setTimeout(function() {
-                                window.location.reload();
-                            }, 500);
-                        } else {
-                            $('#message-deleted-product').addClass('text-danger').text(message || 'Falha ao excluir.');
-                        }
-                    }
-                });
-            });
-        });
-    </script>
-
     <!-- ABRIR MODAL PARA DELETAR PRODUTO DO COMBO -->
     <script type="text/javascript">
         function deletedProduct(id) {
             document.getElementById('id_product').value = id;
             $('#modalDeletedProduct').modal('show');
+        }
+    </script>
+
+    <!-- LISTAR PRODUTOS VIA AJAX -->
+    <script type="text/javascript">
+        function listProducts() {
+            var pag = "<?= $pag ?>";
+            $.ajax({
+                url: "pages/" + pag + "/list-products.php",
+                method: "post",
+                data: $('#form-product').serialize(),
+                dataType: "html",
+                success: function(result) {
+                    $('#products-bundles').html(result); /* Atualiza div com os produtos */
+                }
+            })
         }
     </script>
 

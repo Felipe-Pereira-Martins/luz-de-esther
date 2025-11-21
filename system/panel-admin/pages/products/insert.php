@@ -34,8 +34,6 @@ if (!empty($id2)) { // modo edição
     $currentImageDB = $stmtCur->fetchColumn() ?: 'no-photo.jpg';
 }
 
-
-
 /* Troca o . pela , relacionado ao valor */
 $value = str_replace(',', '.', $value);
 $shipping_value = str_replace(',', '.', $shipping_value);
@@ -98,8 +96,9 @@ $name_new = strtr(trim($name), [
 $name_url = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $name_new));
 $old = $_POST['old-name'] ?? ''; // Corrigido para refletir o novo name no formulário
 
-// Validação
-// Required fields and messages based on your variables
+// =============================================
+// VALIDAÇÃO DE CAMPOS OBRIGATÓRIOS - CORRIGIDO
+// =============================================
 $requiredFields = [
     'name-category'     => 'PREENCHA O CAMPO NOME!',
     'categorie'         => 'SELECIONE A CATEGORIA!',
@@ -118,15 +117,14 @@ $requiredFields = [
     'shipping-value'    => 'PREENCHA O VALOR DO FRETE!'
 ];
 
-// Dynamic validation
+// Verifica cada campo obrigatório - USANDO VARIÁVEL DIFERENTE
 foreach ($requiredFields as $field => $message) {
-    $value = $_POST[$field] ?? '';
-    if (trim($value) === '') {
+    $fieldValue = $_POST[$field] ?? ''; // ⭐ Mudei para $fieldValue
+    if (trim($fieldValue) === '') {
         echo $message;
         exit();
     }
 }
-
 
 // Upload da imagem (se tiver)
 if (!empty($_FILES['image']['name'])) {
